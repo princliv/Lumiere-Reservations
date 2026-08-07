@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Header } from './Header';
+import { Footer } from './Footer';
 
 interface MenuItem {
   id: string;
@@ -146,14 +148,12 @@ const CATEGORY_TABS = [
 interface MenuViewProps {
   onBackToWebsite: () => void;
   onBookTable: () => void;
-  onOurStory: () => void;
   onToast: (msg: string) => void;
 }
 
 export const MenuView = ({
   onBackToWebsite,
   onBookTable,
-  onOurStory,
   onToast
 }: MenuViewProps) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -223,54 +223,16 @@ export const MenuView = ({
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex flex-col font-sans">
-      {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-50 bg-surface shadow-[0_4px_20px_rgba(0,0,0,0.05)] border-b border-outline-variant/10">
-        <div className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
-          <div className="flex items-center gap-8">
-            <span
-              onClick={onBackToWebsite}
-              className="font-display-lg-mobile text-2xl font-bold text-on-surface tracking-tight cursor-pointer flex items-center gap-2"
-            >
-              <span className="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
-              Lumière Reservations
-            </span>
-            <nav className="hidden md:flex gap-6">
-              <button className="text-primary font-bold font-body-md border-b-2 border-primary py-1">
-                Menu
-              </button>
-              <button onClick={onBookTable} className="text-secondary hover:text-on-surface font-body-md transition-colors py-1">
-                Book a Table
-              </button>
-              <button onClick={onOurStory} className="text-secondary hover:text-on-surface font-body-md transition-colors py-1">
-                Our Story
-              </button>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onBackToWebsite}
-              className="text-secondary font-body-md px-4 py-2 hover:bg-surface-container-low rounded-xl transition-all active:scale-95 border border-outline-variant/30 flex items-center gap-1.5"
-            >
-              <span className="material-symbols-outlined text-sm">arrow_back</span>
-              Back to Website
-            </button>
-            <div className="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
-              <img
-                className="w-10 h-10 rounded-full border-2 border-primary/20 object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeRsjGnbjiA17ydZupmrhgkqBDmAa74g4OyrhmSVj_FiwiS_6qEof9Qsld1HepCSPWn_y2wPG_o8HB2jMlF1x8NLyD1N10rUrQVPKrB4kBLjspmThtZ2cTF9aR5iIqTQ7p25zodEopJkKtGYj5NtKDLKM9WLQiUYVdbmluq6JFnMFJ7e1D1y6aexIRfbr8XhD56DH0syl6CuKUXB9Y9o3LgqqDDjQQgTLIaFEwzX20lZi3LL9Xtc_LAzNQxVvTMa4SP8oQL2YIL6I"
-                alt="Manager Profile"
-              />
-              <span onClick={() => onToast('Signed out')} className="hidden sm:inline text-primary font-bold font-body-md cursor-pointer hover:underline">
-                Sign Out
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header
+        currentPage="menu"
+        onNavigateLanding={onBackToWebsite}
+        onNavigateMenu={() => {}}
+        onNavigateReservations={onBookTable}
+        onToast={onToast}
+      />
 
       {/* Main Content */}
-      <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 flex-1 w-full">
+      <main className="flex-grow flex flex-col items-center pt-28 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
         {/* Hero Section */}
         <div className="mb-10 bg-surface-container-low p-6 md:p-8 rounded-2xl border border-outline-variant/20 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -585,6 +547,13 @@ export const MenuView = ({
           </div>
         </div>
       )}
+
+      <Footer
+        onNavigateLanding={onBackToWebsite}
+        onNavigateMenu={() => {}}
+        onNavigateReservations={onBookTable}
+        onToast={onToast}
+      />
     </div>
   );
 };

@@ -7,6 +7,8 @@ import { Toast } from './components/Toast';
 import { MenuView } from './components/MenuView';
 import { ReservationView } from './components/ReservationView';
 import { ScrollToTop } from './components/ScrollToTop';
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
 
 interface GalleryItem {
   src: string;
@@ -56,7 +58,6 @@ function App() {
   const [isChefStoryOpen, setIsChefStoryOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isStickyShadowed, setIsStickyShadowed] = useState(false);
 
   useEffect(() => {
@@ -97,7 +98,6 @@ function App() {
         <MenuView
           onBackToWebsite={() => setCurrentPage('landing')}
           onBookTable={() => setCurrentPage('reservations')}
-          onOurStory={() => setIsChefStoryOpen(true)}
           onToast={triggerToast}
         />
 
@@ -123,68 +123,13 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex flex-col font-sans">
-      {/* Top Glass Navigation Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass-header border-b border-outline-variant/10 transition-all">
-        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-4 flex justify-between items-center">
-          <div className="font-display-lg text-headline-md tracking-tighter font-bold text-on-surface flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
-            Lumière Reservations
-          </div>
-
-          <nav className="hidden md:flex items-center space-x-8">
-            <a className="font-body-md text-primary font-bold border-b-2 border-primary py-1" href="#discover">
-              Discover
-            </a>
-            <button
-              onClick={() => setCurrentPage('reservations')}
-              className="font-body-md text-secondary hover:text-on-surface transition-colors py-1 hover:text-primary font-medium"
-            >
-              Reservations
-            </button>
-            <button
-              onClick={() => setCurrentPage('menu')}
-              className="font-body-md text-secondary hover:text-on-surface transition-colors py-1 hover:text-primary font-medium"
-            >
-              Menu
-            </button>
-          </nav>
-
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => triggerToast('Signed out of guest session')}
-              className="hidden sm:block font-body-md text-secondary hover:text-on-surface transition-colors"
-            >
-              Sign Out
-            </button>
-            <div
-              className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant/20 shadow-sm cursor-pointer"
-              onClick={() => triggerToast('Profile preferences loaded')}
-            >
-              <img
-                className="w-full h-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7pRDjvZZnOxAd6pNZUuek8TyUBkAZRBuxC-npyROZRfOdwhAu1I-oYWMmDBXJyNILw50ICBAaDBooBbhtV9DwMil3MhtUB5QqQ5-fVFllIlDA5lr390PM5f51VJ8cmtGSTJB0T3Q6cBN4oJUUKPV4vqiT_EvK1v_Bc-mbek60ngPLhpQYRb7zBHb7chjPtjKDsAOgvl9tDnb8pKvupWbQnoqAOUdRNuJzOEb6hBAeM8d8ruYxYOywfqW0Z_eRC_BuX7uFzNFS45A"
-                alt="Luxury Dining Guest Profile"
-              />
-            </div>
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden w-10 h-10 flex items-center justify-center text-on-surface"
-            >
-              <span className="material-symbols-outlined">{isMobileMenuOpen ? 'close' : 'menu'}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Dropdown Nav */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-surface border-b border-outline-variant/20 px-6 py-4 space-y-3 animate-fadeIn">
-            <a href="#discover" className="block font-body-md font-semibold text-primary" onClick={() => setIsMobileMenuOpen(false)}>Discover</a>
-            <button onClick={() => { setCurrentPage('reservations'); setIsMobileMenuOpen(false); }} className="block w-full text-left font-body-md text-secondary font-semibold text-primary">Reservations Page</button>
-            <button onClick={() => { setCurrentPage('menu'); setIsMobileMenuOpen(false); }} className="block w-full text-left font-body-md text-secondary font-semibold text-primary">Menu Page</button>
-            <button onClick={() => { triggerToast('Signed out'); setIsMobileMenuOpen(false); }} className="block w-full text-left font-body-md text-secondary">Sign Out</button>
-          </div>
-        )}
-      </header>
+      <Header
+        currentPage="landing"
+        onNavigateLanding={() => setCurrentPage('landing')}
+        onNavigateMenu={() => setCurrentPage('menu')}
+        onNavigateReservations={() => setCurrentPage('reservations')}
+        onToast={triggerToast}
+      />
 
       <main className="pt-0 flex-1">
         {/* Hero Section */}
@@ -460,61 +405,12 @@ function App() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-surface border-t border-outline-variant/20 pt-16 pb-8">
-        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div className="col-span-1 md:col-span-2 space-y-4">
-              <h2 className="font-display-lg-mobile text-headline-md tracking-tighter font-bold text-on-surface flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
-                Lumière
-              </h2>
-              <p className="font-body-md text-secondary max-w-sm">
-                Experience the invisible excellence of modern French cuisine in the heart of Mayfair. Part of the Haute-Cuisine Group.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-label-sm text-on-surface uppercase mb-6 font-semibold">Navigation</h4>
-              <ul className="space-y-4 font-body-md text-secondary">
-                <li><a className="hover:text-primary transition-colors" href="#discover">Experience</a></li>
-                <li><button className="hover:text-primary transition-colors" onClick={() => setCurrentPage('menu')}>Menu</button></li>
-                <li><button className="hover:text-primary transition-colors" onClick={() => setCurrentPage('reservations')}>Reservations</button></li>
-                <li><button className="hover:text-primary transition-colors" onClick={() => setCurrentPage('reservations')}>Private Dining</button></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-label-sm text-on-surface uppercase mb-6 font-semibold">Contact</h4>
-              <ul className="space-y-4 font-body-md text-secondary">
-                <li>12 Berkeley Square, Mayfair, London</li>
-                <li>+44 (0) 20 7123 4567</li>
-                <li>hello@lumiere-dining.com</li>
-                <li className="flex space-x-4 pt-2">
-                  <span className="material-symbols-outlined cursor-pointer hover:text-primary" onClick={() => triggerToast('Share link copied')}>share</span>
-                  <span className="material-symbols-outlined cursor-pointer hover:text-primary" onClick={() => triggerToast('Instagram page opened')}>camera</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-outline-variant/10 text-secondary font-label-sm gap-4">
-            <div className="flex items-center gap-2 text-secondary font-label-sm">
-              <span>POWERED BY</span>
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbsZIxMTMGTD3TOfdIZm391OfjJ-oJrf2h3HKZ3BckU_Pk9Xb4te2EC5d-YrvHHrXPiHQdB2_6OjGs1OAq-biSiEhxd6BuMJe3ffJKTjgOYY1pIqwUvbEXpqnX3gPsW1OXg5_s2RkBbp2RKyY5FqSqzv_g6By6qkOFUzb9_zB3EnRZsuf8N4hEDjKMWW67H_-YOCT4OhJKBxk07UzB_cmcBbfPBTvT7TppRA0gkxSOHdV274CcTZrNaygCHjJIlLG97a0Vv8v0lQs"
-                alt="Astryd Logo"
-                className="h-6 w-auto"
-              />
-            </div>
-            <div className="flex space-x-6">
-              <a className="hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
-              <a className="hover:text-on-surface transition-colors" href="#">Terms of Service</a>
-              <a className="hover:text-on-surface transition-colors" href="#">Accessibility</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer
+        onNavigateLanding={() => setCurrentPage('landing')}
+        onNavigateMenu={() => setCurrentPage('menu')}
+        onNavigateReservations={() => setCurrentPage('reservations')}
+        onToast={triggerToast}
+      />
 
       {/* Interactive Modals */}
       <ReservationModal

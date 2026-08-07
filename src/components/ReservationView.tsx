@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Header } from './Header';
+import { Footer } from './Footer';
 
 interface ReservationViewProps {
   onNavigateLanding: () => void;
@@ -114,43 +116,13 @@ export const ReservationView = ({
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex flex-col font-sans">
-      {/* Top Navigation Bar */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] h-20 border-b border-outline-variant/10">
-        <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-full flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span
-              onClick={onNavigateLanding}
-              className="font-display-lg text-2xl font-bold tracking-tight text-on-surface cursor-pointer flex items-center gap-2"
-            >
-              <span className="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
-              Lumière Reservations
-            </span>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <button
-              onClick={onNavigateMenu}
-              className="text-secondary hover:text-on-surface transition-colors font-body-md"
-            >
-              Menu
-            </button>
-            <button
-              onClick={onNavigateLanding}
-              className="text-secondary hover:text-on-surface transition-colors font-body-md"
-            >
-              Back to Website
-            </button>
-            <div className="flex items-center gap-3 pl-6 border-l border-outline-variant">
-              <span className="text-secondary font-body-md hidden sm:inline">Manager</span>
-              <img
-                className="w-10 h-10 rounded-full border-2 border-surface-container-high object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDgVxOTcr7ITtCI6CZ7UxhBf2J1EA322nMYCegXOHQPZonQ71mQqowsQYUu1VvphN2KDa8ACpltftAnhl_bEUitEq_d01je7rw9mZfo879CIiidhwd6lyhhoQVfUIWU-d-X2S1Z2W-QJGr4BRLJMvFfMa2eOdTkvefcHTR6XhFXXOe6RCcQKsP_TExKeQoI1pmeNEH1NTHyUpB1YpY_ZfQNhpiCSv2Ki4m__dfNs8xI_Eb6hw0XYHYWOu4QaDz1UAB-yj2euXIH1g"
-                alt="Manager Portrait"
-              />
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header
+        currentPage="reservations"
+        onNavigateLanding={onNavigateLanding}
+        onNavigateMenu={onNavigateMenu}
+        onNavigateReservations={() => {}}
+        onToast={onToast}
+      />
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center pt-28 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
@@ -930,22 +902,12 @@ export const ReservationView = ({
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="max-w-container-max mx-auto px-margin-desktop py-12 border-t border-outline-variant/20 w-full flex flex-col md:flex-row justify-between items-center gap-6 text-secondary text-sm">
-        <div className="flex items-center gap-2">
-          <span>POWERED BY</span>
-          <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYKx2IdXw9fD2NWu1zMVjKVJlaDtxMOn2FWETtoKAUhID-k2xsQfC_LMzpHVkHG9KjQlTCW_t1UBI7hlSWDZETVWRMDhk04lPHpI0NCo3Yh5_-V_GGd-t34d5cm94kHdXW-nFtYdjU_GFurYAjvjMPC0ndJt_jBf58hKyV7wyeOO7n2e1fXcIz5DHhvdDPzRYsFF1ORE2k8y2rzd3MwDjuH5dxqwnoTju0e8PUmlEwGwC_iY_dNaQ18SMeKZwfMtrmxvEtgAaSgoc"
-            alt="Astryd Logo"
-            className="h-8 w-auto inline-block object-contain"
-          />
-        </div>
-        <div className="flex gap-8 font-label-sm text-xs uppercase tracking-wider">
-          <a className="hover:text-primary transition-colors" href="#">Privacy</a>
-          <a className="hover:text-primary transition-colors" href="#">Contact</a>
-          <a className="hover:text-primary transition-colors" href="#">Support</a>
-        </div>
-      </footer>
+      <Footer
+        onNavigateLanding={onNavigateLanding}
+        onNavigateMenu={onNavigateMenu}
+        onNavigateReservations={() => {}}
+        onToast={onToast}
+      />
     </div>
   );
 };
