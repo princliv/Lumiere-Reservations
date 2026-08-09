@@ -41,10 +41,10 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
       <div className="bg-surface w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 flex flex-col max-h-[90vh]">
         {/* Modal Header */}
-        <div className="px-6 py-5 bg-surface-container flex items-center justify-between border-b border-outline-variant/20">
+        <div className="px-6 py-5 bg-surface-container flex items-center justify-between border-b border-outline-variant/20 font-sans">
           <div>
-            <span className="font-label-sm text-primary uppercase tracking-widest">Fine Dining Reservation</span>
-            <h3 className="font-headline-md text-on-surface font-semibold">Reserve Your Table at Lumière</h3>
+            <span className="font-label-sm text-primary uppercase tracking-[0.2em] font-bold">Fine Dining Reservation</span>
+            <h3 className="font-serif text-2xl text-on-surface font-semibold">Reserve Your Table at Lumière</h3>
           </div>
           <button
             onClick={onClose}

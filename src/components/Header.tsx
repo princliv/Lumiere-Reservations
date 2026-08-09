@@ -13,29 +13,28 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateLanding,
   onNavigateMenu,
   onNavigateReservations,
-  onToast,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] h-20 border-b border-outline-variant/10 transition-all">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.04)] h-20 border-b border-outline-variant/20 transition-all">
       <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-full flex justify-between items-center">
         {/* Brand Logo */}
         <div
           onClick={onNavigateLanding}
-          className="font-display-lg text-xl sm:text-2xl tracking-tight font-bold text-on-surface flex items-center gap-2 cursor-pointer"
+          className="font-serif text-2xl sm:text-3xl tracking-tight font-semibold text-on-surface flex items-center gap-2.5 cursor-pointer group"
         >
-          <span className="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
-          <span>Lumière Reservations</span>
+          <span className="material-symbols-outlined text-primary text-2.5xl group-hover:rotate-12 transition-transform duration-300">auto_awesome</span>
+          <span className="group-hover:text-primary transition-colors">Lumière</span>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-9">
           <button
             onClick={onNavigateLanding}
-            className={`font-body-md py-1 font-medium transition-colors hover:text-primary ${
+            className={`font-sans text-sm tracking-wide py-1 font-medium transition-colors hover:text-primary relative ${
               currentPage === 'landing'
-                ? 'text-primary font-bold border-b-2 border-primary'
+                ? 'text-primary font-bold after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:rounded-full'
                 : 'text-secondary hover:text-on-surface'
             }`}
           >
@@ -43,49 +42,33 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <button
-            onClick={onNavigateReservations}
-            className={`font-body-md py-1 font-medium transition-colors hover:text-primary ${
-              currentPage === 'reservations'
-                ? 'text-primary font-bold border-b-2 border-primary'
-                : 'text-secondary hover:text-on-surface'
-            }`}
-          >
-            Reservations
-          </button>
-
-          <button
             onClick={onNavigateMenu}
-            className={`font-body-md py-1 font-medium transition-colors hover:text-primary ${
+            className={`font-sans text-sm tracking-wide py-1 font-medium transition-colors hover:text-primary relative ${
               currentPage === 'menu'
-                ? 'text-primary font-bold border-b-2 border-primary'
+                ? 'text-primary font-bold after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:rounded-full'
                 : 'text-secondary hover:text-on-surface'
             }`}
           >
             Menu
           </button>
+
+          <button
+            onClick={onNavigateReservations}
+            className={`font-sans text-sm tracking-wide py-1 font-medium transition-colors hover:text-primary relative ${
+              currentPage === 'reservations'
+                ? 'text-primary font-bold after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:rounded-full'
+                : 'text-secondary hover:text-on-surface'
+            }`}
+          >
+            Reservation
+          </button>
         </nav>
 
-        {/* Right User Actions */}
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => onToast?.('Signed out of guest session')}
-            className="hidden sm:block font-body-md text-secondary hover:text-on-surface transition-colors text-sm"
-          >
-            Sign Out
-          </button>
-          <div
-            className="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant/20 shadow-sm cursor-pointer"
-            onClick={() => onToast?.('Profile preferences loaded')}
-          >
-            <img
-              className="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7pRDjvZZnOxAd6pNZUuek8TyUBkAZRBuxC-npyROZRfOdwhAu1I-oYWMmDBXJyNILw50ICBAaDBooBbhtV9DwMil3MhtUB5QqQ5-fVFllIlDA5lr390PM5f51VJ8cmtGSTJB0T3Q6cBN4oJUUKPV4vqiT_EvK1v_Bc-mbek60ngPLhpQYRb7zBHb7chjPtjKDsAOgvl9tDnb8pKvupWbQnoqAOUdRNuJzOEb6hBAeM8d8ruYxYOywfqW0Z_eRC_BuX7uFzNFS45A"
-              alt="Luxury Dining Guest Profile"
-            />
-          </div>
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center text-on-surface rounded-full hover:bg-surface-container-low"
+            className="w-10 h-10 flex items-center justify-center text-on-surface rounded-full hover:bg-surface-container-low transition-colors"
             aria-label="Toggle navigation menu"
           >
             <span className="material-symbols-outlined">{isMobileMenuOpen ? 'close' : 'menu'}</span>
@@ -95,49 +78,39 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Dropdown Nav */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-surface border-b border-outline-variant/20 px-6 py-4 space-y-3 animate-fadeIn shadow-lg">
+        <div className="md:hidden bg-surface border-b border-outline-variant/20 px-6 py-5 space-y-3.5 animate-fadeIn shadow-xl">
           <button
             onClick={() => {
               onNavigateLanding();
               setIsMobileMenuOpen(false);
             }}
-            className={`block w-full text-left font-body-md py-2 font-medium ${
-              currentPage === 'landing' ? 'text-primary font-bold' : 'text-secondary'
+            className={`block w-full text-left font-sans text-base py-2.5 font-medium transition-colors ${
+              currentPage === 'landing' ? 'text-primary font-bold' : 'text-secondary hover:text-on-surface'
             }`}
           >
             Discover
           </button>
           <button
             onClick={() => {
-              onNavigateReservations();
-              setIsMobileMenuOpen(false);
-            }}
-            className={`block w-full text-left font-body-md py-2 font-medium ${
-              currentPage === 'reservations' ? 'text-primary font-bold' : 'text-secondary'
-            }`}
-          >
-            Reservations
-          </button>
-          <button
-            onClick={() => {
               onNavigateMenu();
               setIsMobileMenuOpen(false);
             }}
-            className={`block w-full text-left font-body-md py-2 font-medium ${
-              currentPage === 'menu' ? 'text-primary font-bold' : 'text-secondary'
+            className={`block w-full text-left font-sans text-base py-2.5 font-medium transition-colors ${
+              currentPage === 'menu' ? 'text-primary font-bold' : 'text-secondary hover:text-on-surface'
             }`}
           >
             Menu
           </button>
-          <hr className="border-outline-variant/10" />
           <button
             onClick={() => {
-              onToast?.('Signed out of guest session');
+              onNavigateReservations();
               setIsMobileMenuOpen(false);
             }}
-            className="block w-full text-left font-body-md text-secondary py-2"
+            className={`block w-full text-left font-sans text-base py-2.5 font-medium transition-colors ${
+              currentPage === 'reservations' ? 'text-primary font-bold' : 'text-secondary hover:text-on-surface'
+            }`}
           >
-            Sign Out
+            Reservation
           </button>
         </div>
       )}

@@ -234,19 +234,19 @@ export const MenuView = ({
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center pt-28 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full">
         {/* Hero Section */}
-        <div className="mb-10 bg-surface-container-low p-6 md:p-8 rounded-2xl border border-outline-variant/20 shadow-sm">
+        <div className="mb-10 bg-surface-container-low p-6 md:p-8 rounded-2xl border border-outline-variant/20 shadow-sm w-full">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <span className="font-label-sm text-primary uppercase tracking-widest">Fine Dining & Takeaway</span>
-              <h1 className="font-display-lg text-4xl md:text-5xl font-semibold text-on-surface mb-3 mt-1">Lumière</h1>
-              <div className="flex flex-wrap items-center gap-4 text-secondary font-body-md">
-                <div className="flex items-center gap-1 text-on-surface font-bold">
+              <span className="font-label-sm text-primary uppercase tracking-[0.2em] font-bold">Fine Dining & Takeaway</span>
+              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-semibold text-on-surface mb-3 mt-1">Lumière</h1>
+              <div className="flex flex-wrap items-center gap-4 text-secondary font-sans text-sm md:text-base">
+                <div className="flex items-center gap-1.5 text-on-surface font-bold">
                   <span className="material-symbols-outlined text-primary text-xl filled">star</span>
                   <span>4.9</span>
                   <span className="text-secondary font-normal">(2.4k+ Reviews)</span>
                 </div>
                 <span className="w-1.5 h-1.5 bg-outline-variant rounded-full"></span>
-                <span>Modern French / American Fusion</span>
+                <span>Modern French / Haute Cuisine</span>
                 <span className="w-1.5 h-1.5 bg-outline-variant rounded-full"></span>
                 <div className="flex items-center gap-1">
                   <span className="material-symbols-outlined text-primary">schedule</span>
@@ -263,9 +263,9 @@ export const MenuView = ({
             <div className="flex gap-3">
               <button
                 onClick={() => onToast('Menu link copied to clipboard!')}
-                className="flex items-center gap-2 px-5 py-2.5 border border-outline-variant/40 bg-surface rounded-xl hover:bg-surface-container-high transition-all text-on-surface font-body-md"
+                className="flex items-center gap-2 px-5 py-2.5 border border-outline-variant/40 bg-surface rounded-xl hover:bg-surface-container-high transition-all text-on-surface font-sans text-sm font-medium"
               >
-                <span className="material-symbols-outlined">share</span>
+                <span className="material-symbols-outlined text-xl">share</span>
                 <span>Share</span>
               </button>
               <button
@@ -273,13 +273,13 @@ export const MenuView = ({
                   setIsFavorite(!isFavorite);
                   onToast(isFavorite ? 'Removed from favorites' : 'Added to favorites');
                 }}
-                className={`flex items-center gap-2 px-5 py-2.5 border rounded-xl transition-all font-body-md ${
+                className={`flex items-center gap-2 px-5 py-2.5 border rounded-xl transition-all font-sans text-sm font-medium ${
                   isFavorite
                     ? 'bg-rose-50 border-rose-300 text-rose-600'
                     : 'border-outline-variant/40 bg-surface hover:bg-surface-container-high text-on-surface'
                 }`}
               >
-                <span className={`material-symbols-outlined ${isFavorite ? 'filled text-rose-600' : ''}`}>favorite</span>
+                <span className={`material-symbols-outlined text-xl ${isFavorite ? 'filled text-rose-600' : ''}`}>favorite</span>
                 <span>{isFavorite ? 'Favorited' : 'Favorite'}</span>
               </button>
             </div>
@@ -369,8 +369,8 @@ export const MenuView = ({
                 {/* Popular Section */}
                 <section id="popular">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="font-headline-md text-2xl font-bold text-on-surface">Popular Choices</h2>
-                    <span className="text-secondary font-body-md text-sm">Top rated by diners</span>
+                    <h2 className="font-serif text-2xl md:text-3xl font-bold text-on-surface">Popular Choices</h2>
+                    <span className="text-secondary font-sans text-sm">Top rated by diners</span>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {filteredItems
@@ -390,7 +390,7 @@ export const MenuView = ({
                 {/* Burgers Section */}
                 <section id="burgers">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="font-headline-md text-2xl font-bold text-on-surface">Burgers & Steaks</h2>
+                    <h2 className="font-serif text-2xl md:text-3xl font-bold text-on-surface">Burgers & Steaks</h2>
                     <a href="#steaks" className="text-primary font-bold text-sm hover:underline">View Steaks</a>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -410,7 +410,7 @@ export const MenuView = ({
                 {/* Starters & Pizza Section */}
                 <section id="starters">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="font-headline-md text-2xl font-bold text-on-surface">Starters & Pizza</h2>
+                    <h2 className="font-serif text-2xl md:text-3xl font-bold text-on-surface">Starters & Pizza</h2>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {filteredItems
@@ -429,7 +429,7 @@ export const MenuView = ({
                 {/* Desserts & Beverages Section */}
                 <section id="desserts">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="font-headline-md text-2xl font-bold text-on-surface">Desserts & Fine Beverages</h2>
+                    <h2 className="font-serif text-2xl md:text-3xl font-bold text-on-surface">Desserts & Fine Beverages</h2>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {filteredItems
@@ -455,19 +455,19 @@ export const MenuView = ({
         <div className="fixed bottom-6 right-6 left-6 md:left-auto z-50 animate-fadeIn">
           <div className="bg-inverse-surface text-inverse-on-surface p-4 rounded-2xl shadow-2xl flex items-center gap-6 md:min-w-[360px] border border-white/10">
             <div className="flex flex-col">
-              <span className="font-label-sm text-[11px] uppercase opacity-70 tracking-widest">Selected Gourmet Order</span>
+              <span className="font-label-sm text-[11px] uppercase opacity-70 tracking-widest font-bold">Selected Gourmet Order</span>
               <div className="flex items-baseline gap-2">
-                <span className="font-headline-md text-xl font-bold">{totalCartCount} {totalCartCount === 1 ? 'Item' : 'Items'}</span>
+                <span className="font-sans text-xl font-bold">{totalCartCount} {totalCartCount === 1 ? 'Item' : 'Items'}</span>
                 <span className="opacity-50">•</span>
-                <span className="font-headline-md text-xl font-bold text-primary-fixed-dim">${totalCartPrice.toFixed(2)}</span>
+                <span className="font-serif text-2xl font-bold text-primary-fixed-dim">£{totalCartPrice.toFixed(2)}</span>
               </div>
             </div>
             <button
               onClick={() => setIsCheckoutOpen(true)}
-              className="ml-auto bg-primary hover:bg-primary-container text-on-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all active:scale-95 shadow-lg"
+              className="ml-auto bg-primary hover:bg-primary-container text-on-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all active:scale-95 shadow-lg text-sm tracking-wide"
             >
               <span>Checkout</span>
-              <span className="material-symbols-outlined">arrow_forward</span>
+              <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
           </div>
         </div>
@@ -479,8 +479,8 @@ export const MenuView = ({
           <div className="bg-surface w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 flex flex-col max-h-[90vh]">
             <div className="px-6 py-5 bg-surface-container flex items-center justify-between border-b border-outline-variant/20">
               <div>
-                <span className="font-label-sm text-primary uppercase tracking-widest">Order Summary</span>
-                <h3 className="font-headline-md text-on-surface font-semibold">Confirm Lumière Delivery</h3>
+                <span className="font-label-sm text-primary uppercase tracking-[0.2em] font-bold">Order Summary</span>
+                <h3 className="font-serif text-2xl text-on-surface font-semibold">Confirm Lumière Delivery</h3>
               </div>
               <button
                 onClick={() => setIsCheckoutOpen(false)}
@@ -493,37 +493,37 @@ export const MenuView = ({
             <form onSubmit={handleCheckoutSubmit} className="p-6 overflow-y-auto space-y-6 flex-1">
               {/* Order Items Breakdown */}
               <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-outline-variant/20">
-                <h4 className="font-body-md font-bold text-on-surface border-b border-outline-variant/20 pb-2">Items</h4>
+                <h4 className="font-sans font-bold text-on-surface text-sm border-b border-outline-variant/20 pb-2">Items</h4>
                 {ALL_MENU_ITEMS.filter((i) => cart[i.id]).map((item) => (
-                  <div key={item.id} className="flex justify-between items-center font-body-md text-sm">
+                  <div key={item.id} className="flex justify-between items-center font-sans text-sm">
                     <div>
                       <span className="font-bold text-primary mr-2">{cart[item.id]}x</span>
                       <span>{item.name}</span>
                     </div>
-                    <span className="font-semibold text-on-surface">${(item.price * cart[item.id]).toFixed(2)}</span>
+                    <span className="font-semibold text-on-surface">£{(item.price * cart[item.id]).toFixed(2)}</span>
                   </div>
                 ))}
-                <div className="border-t border-outline-variant/20 pt-2 flex justify-between font-body-md font-bold text-on-surface">
+                <div className="border-t border-outline-variant/20 pt-2 flex justify-between font-sans font-bold text-on-surface text-base">
                   <span>Subtotal</span>
-                  <span>${totalCartPrice.toFixed(2)}</span>
+                  <span className="font-serif text-lg font-bold text-primary">£{totalCartPrice.toFixed(2)}</span>
                 </div>
               </div>
 
               {/* Delivery info */}
-              <div className="space-y-4">
+              <div className="space-y-4 font-sans">
                 <div>
-                  <label className="block font-body-md font-medium text-on-surface mb-1">Delivery Address</label>
+                  <label className="block text-xs font-bold text-on-surface uppercase tracking-wider mb-1">Delivery Address</label>
                   <input
                     type="text"
                     defaultValue="14 Mayfair Square, London, W1J 8AJ"
-                    className="w-full px-4 py-3 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface focus:outline-none focus:border-primary"
+                    className="w-full px-4 py-3 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block font-body-md font-medium text-on-surface mb-1">Payment Method</label>
-                  <select className="w-full px-4 py-3 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface focus:outline-none focus:border-primary">
+                  <label className="block text-xs font-bold text-on-surface uppercase tracking-wider mb-1">Payment Method</label>
+                  <select className="w-full px-4 py-3 rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface text-sm focus:outline-none focus:border-primary">
                     <option>Apple Pay (••• 9421)</option>
                     <option>Visa (••• 4022)</option>
                     <option>American Express Centurion</option>
@@ -533,12 +533,12 @@ export const MenuView = ({
 
               <div className="pt-4 flex justify-between items-center border-t border-outline-variant/20">
                 <div>
-                  <div className="text-xs text-secondary">Total Payable</div>
-                  <div className="font-headline-md font-bold text-primary">${totalCartPrice.toFixed(2)}</div>
+                  <div className="text-xs text-secondary font-label-sm uppercase">Total Payable</div>
+                  <div className="font-serif text-2xl font-bold text-primary">£{totalCartPrice.toFixed(2)}</div>
                 </div>
                 <button
                   type="submit"
-                  className="px-8 py-3 rounded-xl bg-primary text-on-primary font-body-md font-bold hover:bg-primary-container shadow-md transition-all active:scale-95"
+                  className="px-8 py-3 rounded-xl bg-primary text-on-primary font-sans text-sm font-semibold hover:bg-primary-container shadow-md transition-all active:scale-95"
                 >
                   Place Order Now
                 </button>
@@ -582,12 +582,12 @@ const MenuItemCard = ({ item, qty, onUpdateQty }: MenuItemCardProps) => {
 
       <div className="flex flex-col justify-between flex-grow">
         <div>
-          <div className="flex justify-between items-start mb-1 gap-2">
-            <h3 className="font-headline-md text-lg font-bold text-on-surface">{item.name}</h3>
-            <span className="font-headline-md text-primary font-bold">${item.price.toFixed(2)}</span>
+          <div className="flex justify-between items-start mb-1.5 gap-2">
+            <h3 className="font-serif text-lg font-bold text-on-surface leading-tight">{item.name}</h3>
+            <span className="font-serif text-xl text-primary font-bold">£{item.price.toFixed(2)}</span>
           </div>
-          <p className="text-secondary font-body-md text-sm line-clamp-2 mb-3">{item.description}</p>
-          <div className="flex items-center gap-3 text-xs text-secondary">
+          <p className="text-secondary font-sans text-sm line-clamp-2 mb-3 leading-relaxed">{item.description}</p>
+          <div className="flex items-center gap-3 text-xs text-secondary font-sans">
             <div className="flex items-center gap-1 font-semibold text-on-surface">
               <span className="material-symbols-outlined text-sm text-primary filled">star</span>
               <span>{item.rating} ({item.reviews})</span>
@@ -614,7 +614,7 @@ const MenuItemCard = ({ item, qty, onUpdateQty }: MenuItemCardProps) => {
           ) : (
             <button
               onClick={() => onUpdateQty(1)}
-              className="px-6 py-2 bg-on-surface text-on-primary rounded-xl font-bold hover:bg-primary transition-all active:scale-95 shadow-sm text-sm"
+              className="px-6 py-2 bg-on-surface text-on-primary rounded-xl font-bold hover:bg-primary transition-all active:scale-95 shadow-sm text-xs tracking-wider uppercase"
             >
               ADD
             </button>

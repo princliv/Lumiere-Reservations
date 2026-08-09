@@ -153,28 +153,28 @@ export const ReservationView = ({
           <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-8 space-y-8">
               {/* Party Size */}
-              <section className="bg-surface p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant/10">
-                <h3 className="font-headline-md font-semibold mb-6 flex items-center gap-3 text-on-surface">
-                  <span className="material-symbols-outlined text-primary text-2xl">groups</span>
-                  Party Size
+              <section className="bg-surface p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant/20">
+                <h3 className="font-serif text-2xl font-semibold mb-6 flex items-center gap-3 text-on-surface">
+                  <span className="material-symbols-outlined text-primary text-2.5xl">groups</span>
+                  <span>Party Size</span>
                 </h3>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 font-sans">
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <button
                       key={num}
                       onClick={() => setPartySize(num)}
-                      className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
+                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                         partySize === num
                           ? 'border-2 border-primary bg-primary/10 text-primary shadow-sm font-bold scale-105'
                           : 'border border-outline-variant/40 text-on-surface hover:border-primary hover:text-primary bg-surface-container-low'
                       }`}
                     >
-                      {num}
+                      {num} {num === 1 ? 'Guest' : 'Guests'}
                     </button>
                   ))}
                   <button
                     onClick={() => setPartySize(9)}
-                    className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                       partySize >= 9
                         ? 'border-2 border-primary bg-primary/10 text-primary shadow-sm font-bold scale-105'
                         : 'border border-outline-variant/40 text-on-surface hover:border-primary hover:text-primary bg-surface-container-low'
@@ -188,11 +188,11 @@ export const ReservationView = ({
               {/* Date & Time Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Date Picker */}
-                <section className="bg-surface p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant/10">
+                <section className="bg-surface p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant/20">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-headline-md font-semibold flex items-center gap-3 text-on-surface">
-                      <span className="material-symbols-outlined text-primary text-2xl">calendar_month</span>
-                      Date
+                    <h3 className="font-serif text-2xl font-semibold flex items-center gap-3 text-on-surface">
+                      <span className="material-symbols-outlined text-primary text-2.5xl">calendar_month</span>
+                      <span>Date</span>
                     </h3>
                     <div className="flex gap-1">
                       <button className="p-2 hover:bg-surface-container rounded-full text-secondary">
@@ -203,13 +203,13 @@ export const ReservationView = ({
                       </button>
                     </div>
                   </div>
-                  <div className="text-center font-bold font-body-md mb-4 text-on-surface">
+                  <div className="text-center font-bold font-sans text-sm mb-4 text-on-surface">
                     {selectedMonth}
                   </div>
-                  <div className="grid grid-cols-7 gap-y-2 text-center text-xs font-bold text-secondary uppercase mb-3">
+                  <div className="grid grid-cols-7 gap-y-2 text-center text-xs font-bold text-secondary uppercase tracking-wider mb-3">
                     <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
                   </div>
-                  <div className="grid grid-cols-7 gap-1.5">
+                  <div className="grid grid-cols-7 gap-1.5 font-sans">
                     <div className="aspect-square flex items-center justify-center text-outline/30 text-sm">30</div>
                     <div className="aspect-square flex items-center justify-center text-outline/30 text-sm">31</div>
                     {daysInMonth.map((d) => (
@@ -229,12 +229,12 @@ export const ReservationView = ({
                 </section>
 
                 {/* Time Slot Picker */}
-                <section className="bg-surface p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant/10 overflow-hidden">
-                  <h3 className="font-headline-md font-semibold mb-6 flex items-center gap-3 text-on-surface">
-                    <span className="material-symbols-outlined text-primary text-2xl">schedule</span>
-                    Available Time
+                <section className="bg-surface p-6 md:p-8 rounded-2xl shadow-sm border border-outline-variant/20 overflow-hidden">
+                  <h3 className="font-serif text-2xl font-semibold mb-6 flex items-center gap-3 text-on-surface">
+                    <span className="material-symbols-outlined text-primary text-2.5xl">schedule</span>
+                    <span>Available Time</span>
                   </h3>
-                  <div className="space-y-6 max-h-[380px] overflow-y-auto pr-1">
+                  <div className="space-y-6 max-h-[380px] overflow-y-auto pr-1 font-sans">
                     <div>
                       <h4 className="text-xs font-bold text-secondary uppercase tracking-widest mb-3">Afternoon</h4>
                       <div className="grid grid-cols-2 gap-3">
@@ -285,29 +285,29 @@ export const ReservationView = ({
             {/* Summary Sidebar */}
             <div className="lg:col-span-4">
               <div className="sticky top-44 space-y-6">
-                <section className="bg-surface rounded-2xl overflow-hidden shadow-lg border border-outline-variant/10">
+                <section className="bg-surface rounded-2xl overflow-hidden shadow-lg border border-outline-variant/20">
                   <div className="h-48 relative">
                     <img
                       className="w-full h-full object-cover"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn-BCmPvdhaCtvMMugttVWdxIHPK-InLbetXVO24a9ybBlFtbKKa88kuMtsDyNShg-kVTh4ydJJxzjuHH4VJ6Bc08HCUkDKHq9akRSY7XYOEcf_aX2mu1_UOWQT0nopHkjLgHxHpDtNfnxXPKBbHfIZdrLq9jigV-IO7k9lvk8qlXg1dvRDnVNfqIJRXav_hMjCJC52DiBQYXpa_sdLR26lzwHnupS1lFtR2IrbyqFKAOHPQ0tEnS7Osy7Dq8PLpVnHWz-noH3Oyg"
                       alt="Lumière Fine Dining Plating"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent flex items-end p-6">
-                      <h2 className="text-white font-headline-md text-xl font-bold">Lumière Mayfair</h2>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6">
+                      <h2 className="text-white font-serif text-2xl font-bold">Lumière Mayfair</h2>
                     </div>
                   </div>
 
-                  <div className="p-6 space-y-6">
+                  <div className="p-6 space-y-6 font-sans">
                     <div className="space-y-4">
-                      <div className="flex justify-between items-center font-body-md text-sm">
+                      <div className="flex justify-between items-center text-sm">
                         <span className="text-secondary">Guests</span>
                         <span className="font-bold text-on-surface">{partySize} {partySize === 1 ? 'Person' : 'People'}</span>
                       </div>
-                      <div className="flex justify-between items-center font-body-md text-sm">
+                      <div className="flex justify-between items-center text-sm">
                         <span className="text-secondary">Date</span>
                         <span className="font-bold text-on-surface">Wednesday, Sep {selectedDay}</span>
                       </div>
-                      <div className="flex justify-between items-center font-body-md text-sm">
+                      <div className="flex justify-between items-center text-sm">
                         <span className="text-secondary">Time</span>
                         <span className="font-bold text-on-surface">{selectedTime}</span>
                       </div>
@@ -327,7 +327,7 @@ export const ReservationView = ({
 
                     <button
                       onClick={() => setStep(2)}
-                      className="w-full py-4 bg-on-surface text-surface rounded-xl font-bold font-body-md hover:bg-on-surface/90 transition-all duration-300 shadow-xl active:scale-[0.98] flex items-center justify-center gap-2 group"
+                      className="w-full py-4 bg-on-surface text-surface rounded-xl font-bold text-sm tracking-wide uppercase hover:bg-on-surface/90 transition-all duration-300 shadow-xl active:scale-[0.98] flex items-center justify-center gap-2 group"
                     >
                       <span>Continue to Seating</span>
                       <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
@@ -345,10 +345,10 @@ export const ReservationView = ({
         {step === 2 && (
           <div className="w-full max-w-6xl space-y-12 animate-fadeIn">
             <div className="text-center mb-10">
-              <h2 className="font-display-lg text-4xl md:text-5xl font-semibold text-on-surface mb-3">
+              <h2 className="font-serif text-4xl md:text-5xl font-semibold text-on-surface mb-3">
                 Where would you like to sit?
               </h2>
-              <p className="text-secondary font-body-lg max-w-xl mx-auto">
+              <p className="text-secondary font-sans text-base md:text-lg max-w-xl mx-auto">
                 Select your preferred environment for an unforgettable culinary experience tailored to your mood.
               </p>
             </div>
@@ -379,21 +379,21 @@ export const ReservationView = ({
                       </div>
                     )}
                   </div>
-                  <h3 className="font-headline-md text-xl font-bold text-on-surface mb-1">{opt.title}</h3>
-                  <p className="text-secondary text-sm font-body-md">{opt.desc}</p>
+                  <h3 className="font-serif text-xl font-bold text-on-surface mb-1">{opt.title}</h3>
+                  <p className="text-secondary text-sm font-sans leading-relaxed">{opt.desc}</p>
                 </div>
               ))}
             </div>
 
-            <div className="w-full max-w-4xl mx-auto">
+            <div className="w-full max-w-4xl mx-auto font-sans">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary text-2xl">map</span>
-                  <h4 className="font-headline-md text-lg font-semibold text-on-surface">Floor Map Visualization</h4>
+                  <h4 className="font-serif text-xl font-semibold text-on-surface">Floor Map Visualization</h4>
                 </div>
                 <button
                   onClick={() => setIsMapVisible(!isMapVisible)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant/40 hover:bg-surface-container-low transition-colors text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant/40 hover:bg-surface-container-low transition-colors text-xs font-bold uppercase tracking-wider"
                 >
                   <span>{isMapVisible ? 'HIDE MAP' : 'VIEW MAP'}</span>
                   <span className={`material-symbols-outlined text-base transition-transform ${isMapVisible ? 'rotate-180' : ''}`}>
@@ -429,12 +429,12 @@ export const ReservationView = ({
             </div>
 
             <div className="fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md border-t border-outline-variant/20 py-5 px-margin-mobile md:px-margin-desktop z-40">
-              <div className="max-w-container-max mx-auto flex justify-between items-center">
+              <div className="max-w-container-max mx-auto flex justify-between items-center font-sans">
                 <button
                   onClick={() => setStep(1)}
                   className="flex items-center gap-2 text-secondary hover:text-on-surface transition-colors font-bold text-xs uppercase tracking-widest"
                 >
-                  <span className="material-symbols-outlined">arrow_back</span>
+                  <span className="material-symbols-outlined text-base">arrow_back</span>
                   <span>BACK</span>
                 </button>
 
@@ -465,10 +465,10 @@ export const ReservationView = ({
         {step === 3 && (
           <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn max-w-5xl">
             <div className="lg:col-span-8">
-              <div className="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 md:p-10 space-y-8">
+              <div className="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 md:p-10 space-y-8 font-sans">
                 <div>
-                  <h2 className="font-headline-md text-2xl font-bold text-on-surface mb-2">Secure Your Table</h2>
-                  <p className="text-secondary font-body-md text-sm">
+                  <h2 className="font-serif text-3xl font-bold text-on-surface mb-2">Secure Your Table</h2>
+                  <p className="text-secondary text-sm">
                     Please provide your details to finalize the reservation. We'll send a confirmation to your email.
                   </p>
                 </div>
@@ -484,7 +484,7 @@ export const ReservationView = ({
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="Julianne Smith"
-                        className="w-full bg-surface p-4 rounded-xl border border-outline-variant/50 font-body-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                        className="w-full bg-surface p-4 rounded-xl border border-outline-variant/50 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                         required
                       />
                     </div>
@@ -497,8 +497,8 @@ export const ReservationView = ({
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+1 (555) 000-0000"
-                        className="w-full bg-surface p-4 rounded-xl border border-outline-variant/50 font-body-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                        placeholder="+44 20 7123 4567"
+                        className="w-full bg-surface p-4 rounded-xl border border-outline-variant/50 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                         required
                       />
                     </div>
@@ -513,7 +513,7 @@ export const ReservationView = ({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="julianne.s@example.com"
-                      className="w-full bg-surface p-4 rounded-xl border border-outline-variant/50 font-body-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                      className="w-full bg-surface p-4 rounded-xl border border-outline-variant/50 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                       required
                     />
                   </div>
@@ -527,7 +527,7 @@ export const ReservationView = ({
                       value={specialRequests}
                       onChange={(e) => setSpecialRequests(e.target.value)}
                       placeholder="Is there anything we should know about your visit?"
-                      className="w-full bg-surface p-4 rounded-xl border border-outline-variant/50 font-body-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all resize-none"
+                      className="w-full bg-surface p-4 rounded-xl border border-outline-variant/50 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all resize-none"
                     />
                   </div>
 
@@ -539,7 +539,7 @@ export const ReservationView = ({
                         onChange={(e) => setNewsletterOptIn(e.target.checked)}
                         className="h-5 w-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer mt-0.5"
                       />
-                      <span className="text-secondary font-body-md text-sm group-hover:text-on-surface transition-colors">
+                      <span className="text-secondary text-sm group-hover:text-on-surface transition-colors">
                         Send me occasional updates, seasonal menu previews, and exclusive offers (Newsletter).
                       </span>
                     </label>
@@ -552,7 +552,7 @@ export const ReservationView = ({
                         className="h-5 w-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer mt-0.5"
                         required
                       />
-                      <span className="text-secondary font-body-md text-sm group-hover:text-on-surface transition-colors">
+                      <span className="text-secondary text-sm group-hover:text-on-surface transition-colors">
                         I agree to the <a href="#" className="text-primary font-bold underline">Terms of Service</a> and <a href="#" className="text-primary font-bold underline">Cancellation Policy</a>.
                       </span>
                     </label>
@@ -562,13 +562,13 @@ export const ReservationView = ({
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="px-6 py-3 rounded-xl border border-outline text-on-surface font-body-md text-sm font-semibold hover:bg-surface-container-low transition-colors"
+                      className="px-6 py-3 rounded-xl border border-outline text-on-surface text-sm font-semibold hover:bg-surface-container-low transition-colors"
                     >
                       Back
                     </button>
                     <button
                       type="submit"
-                      className="px-10 py-4 bg-on-surface text-on-primary rounded-xl font-bold font-headline-md text-base hover:bg-on-surface-variant shadow-lg active:scale-[0.98] transition-all"
+                      className="px-10 py-4 bg-on-surface text-on-primary rounded-xl font-bold text-sm tracking-wide uppercase hover:bg-on-surface-variant shadow-lg active:scale-[0.98] transition-all"
                     >
                       Review Reservation
                     </button>
@@ -578,7 +578,7 @@ export const ReservationView = ({
             </div>
 
             <div className="lg:col-span-4">
-              <div className="sticky top-28 space-y-6">
+              <div className="sticky top-28 space-y-6 font-sans">
                 <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 shadow-sm overflow-hidden">
                   <div className="h-36 w-full overflow-hidden">
                     <img
@@ -588,13 +588,13 @@ export const ReservationView = ({
                     />
                   </div>
                   <div className="p-6">
-                    <h3 className="font-headline-md text-lg font-bold text-on-surface mb-4">Reservation Summary</h3>
+                    <h3 className="font-serif text-xl font-bold text-on-surface mb-4">Reservation Summary</h3>
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
                         <span className="material-symbols-outlined text-primary text-xl">calendar_today</span>
                         <div>
                           <p className="font-label-sm text-[10px] text-secondary uppercase font-bold tracking-wider">DATE & TIME</p>
-                          <p className="font-body-md text-on-surface font-semibold text-sm">Wednesday, Sep {selectedDay} • {selectedTime}</p>
+                          <p className="text-on-surface font-semibold text-sm">Wednesday, Sep {selectedDay} • {selectedTime}</p>
                         </div>
                       </div>
 
@@ -602,7 +602,7 @@ export const ReservationView = ({
                         <span className="material-symbols-outlined text-primary text-xl">group</span>
                         <div>
                           <p className="font-label-sm text-[10px] text-secondary uppercase font-bold tracking-wider">GUESTS</p>
-                          <p className="font-body-md text-on-surface font-semibold text-sm">{partySize} People</p>
+                          <p className="text-on-surface font-semibold text-sm">{partySize} People</p>
                         </div>
                       </div>
 
@@ -610,7 +610,7 @@ export const ReservationView = ({
                         <span className="material-symbols-outlined text-primary text-xl">grid_view</span>
                         <div>
                           <p className="font-label-sm text-[10px] text-secondary uppercase font-bold tracking-wider">TABLE TYPE</p>
-                          <p className="font-body-md text-on-surface font-semibold text-sm">{selectedSeating || 'Main Dining Area'}</p>
+                          <p className="text-on-surface font-semibold text-sm">{selectedSeating || 'Main Dining Area'}</p>
                         </div>
                       </div>
                     </div>
@@ -637,8 +637,8 @@ export const ReservationView = ({
         {step === 4 && (
           <div className="w-full max-w-4xl space-y-10 animate-fadeIn">
             <div className="text-center mb-8">
-              <h2 className="font-display-lg text-4xl md:text-5xl font-semibold text-on-surface mb-2">Almost there.</h2>
-              <p className="font-body-lg text-secondary">Please review your reservation details before confirming.</p>
+              <h2 className="font-serif text-4xl md:text-5xl font-semibold text-on-surface mb-2">Almost there.</h2>
+              <p className="font-sans text-base md:text-lg text-secondary">Please review your reservation details before confirming.</p>
             </div>
 
             <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -655,11 +655,11 @@ export const ReservationView = ({
                       <span className="font-label-sm text-xs font-bold tracking-widest text-primary-fixed bg-on-surface/40 backdrop-blur-md px-3 py-1 rounded-full mb-2 inline-block">
                         CONFIRMED RESTAURANT
                       </span>
-                      <h3 className="font-headline-md text-2xl font-bold">Lumière</h3>
+                      <h3 className="font-serif text-3xl font-bold">Lumière</h3>
                     </div>
                   </div>
 
-                  <div className="p-8">
+                  <div className="p-8 font-sans">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
@@ -667,8 +667,8 @@ export const ReservationView = ({
                         </div>
                         <div>
                           <p className="font-label-sm text-xs text-secondary uppercase font-bold tracking-wider mb-1">Date & Time</p>
-                          <p className="font-headline-md text-lg font-bold text-on-surface">Wednesday, Sep {selectedDay}</p>
-                          <p className="font-body-md text-sm text-on-surface/70">at {selectedTime}</p>
+                          <p className="font-serif text-xl font-bold text-on-surface">Wednesday, Sep {selectedDay}</p>
+                          <p className="text-sm text-on-surface/70">at {selectedTime}</p>
                         </div>
                       </div>
 
@@ -678,8 +678,8 @@ export const ReservationView = ({
                         </div>
                         <div>
                           <p className="font-label-sm text-xs text-secondary uppercase font-bold tracking-wider mb-1">Party Size</p>
-                          <p className="font-headline-md text-lg font-bold text-on-surface">{partySize} People</p>
-                          <p className="font-body-md text-sm text-on-surface/70">{selectedSeating || 'Main Dining Area'}</p>
+                          <p className="font-serif text-xl font-bold text-on-surface">{partySize} People</p>
+                          <p className="text-sm text-on-surface/70">{selectedSeating || 'Main Dining Area'}</p>
                         </div>
                       </div>
                     </div>
@@ -687,7 +687,7 @@ export const ReservationView = ({
                     <div className="mt-8 pt-6 border-t border-outline-variant/20 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary filled text-xl">verified</span>
-                        <span className="font-body-md text-sm font-semibold text-on-surface">Seating Guaranteed</span>
+                        <span className="text-sm font-semibold text-on-surface">Seating Guaranteed</span>
                       </div>
                       <button
                         onClick={() => setStep(1)}
@@ -699,14 +699,14 @@ export const ReservationView = ({
                   </div>
                 </div>
 
-                <div className="bg-surface-container-low/60 border border-outline-variant/20 rounded-2xl p-8 space-y-4">
+                <div className="bg-surface-container-low/60 border border-outline-variant/20 rounded-2xl p-8 space-y-4 font-sans">
                   <div className="flex items-center gap-3">
                     <span className="material-symbols-outlined text-secondary text-2xl">info</span>
-                    <h4 className="font-headline-md text-lg font-semibold text-on-surface">Cancellation Policy</h4>
+                    <h4 className="font-serif text-xl font-semibold text-on-surface">Cancellation Policy</h4>
                   </div>
-                  <p className="font-body-md text-sm text-secondary leading-relaxed">
+                  <p className="text-sm text-secondary leading-relaxed">
                     We understand plans change. For a full refund of any deposit, please cancel at least{' '}
-                    <span className="font-bold text-on-surface">24 hours</span> prior to your reservation. Cancellations made within 24 hours may incur a flat fee of $25 per guest.
+                    <span className="font-bold text-on-surface">24 hours</span> prior to your reservation. Cancellations made within 24 hours may incur a flat fee of £25 per guest.
                   </p>
                   <div className="flex items-center gap-3 text-on-tertiary-fixed-variant bg-tertiary-fixed/20 p-4 rounded-xl border border-tertiary/20">
                     <span className="material-symbols-outlined text-xl">notifications_active</span>
@@ -715,29 +715,29 @@ export const ReservationView = ({
                 </div>
               </div>
 
-              <div className="lg:col-span-4 flex flex-col gap-6">
+              <div className="lg:col-span-4 flex flex-col gap-6 font-sans">
                 <div className="sticky top-28 bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-8 shadow-xl">
-                  <h4 className="font-headline-md text-xl font-bold text-on-surface mb-6">Reservation Summary</h4>
+                  <h4 className="font-serif text-2xl font-bold text-on-surface mb-6">Reservation Summary</h4>
                   <div className="space-y-4 mb-8">
-                    <div className="flex justify-between font-body-md text-sm">
+                    <div className="flex justify-between text-sm">
                       <span className="text-secondary">Booking Fee</span>
-                      <span className="text-on-surface font-semibold">$0.00</span>
+                      <span className="text-on-surface font-semibold">£0.00</span>
                     </div>
-                    <div className="flex justify-between font-body-md text-sm">
+                    <div className="flex justify-between text-sm">
                       <span className="text-secondary">Security Deposit</span>
                       <span className="text-on-surface font-semibold">None required</span>
                     </div>
                     <div className="h-px bg-outline-variant/20 my-2"></div>
-                    <div className="flex justify-between font-headline-md text-lg font-bold">
+                    <div className="flex justify-between text-lg font-bold">
                       <span>Total</span>
-                      <span className="text-primary">Free</span>
+                      <span className="text-primary font-serif text-xl font-bold">Free</span>
                     </div>
                   </div>
 
                   <button
                     disabled={isProcessing}
                     onClick={handleFinalConfirm}
-                    className="w-full bg-[#1A1A1A] hover:bg-on-surface-variant text-white py-5 rounded-2xl font-headline-md font-semibold text-lg transition-all active:scale-95 shadow-lg mb-4 flex items-center justify-center gap-2 group cursor-pointer"
+                    className="w-full bg-[#1A1A1A] hover:bg-on-surface-variant text-white py-5 rounded-2xl font-sans font-bold text-base transition-all active:scale-95 shadow-lg mb-4 flex items-center justify-center gap-2 group cursor-pointer tracking-wider uppercase"
                   >
                     {isProcessing ? (
                       <>
@@ -756,7 +756,7 @@ export const ReservationView = ({
 
                   <button
                     onClick={() => setStep(3)}
-                    className="w-full bg-transparent hover:bg-surface-container border border-outline-variant/50 text-on-surface py-3.5 rounded-2xl font-body-md text-sm font-semibold transition-all active:scale-95 mb-6"
+                    className="w-full bg-transparent hover:bg-surface-container border border-outline-variant/50 text-on-surface py-3.5 rounded-2xl text-sm font-semibold transition-all active:scale-95 mb-6"
                   >
                     Edit Details
                   </button>
@@ -772,7 +772,7 @@ export const ReservationView = ({
                   </div>
                   <div>
                     <p className="font-label-sm text-xs font-bold text-on-surface mb-0.5">VIP ACCESSIBILITY</p>
-                    <p className="font-body-md text-xs text-secondary">Member rewards apply at check-in.</p>
+                    <p className="text-xs text-secondary">Member rewards apply at check-in.</p>
                   </div>
                 </div>
               </div>
@@ -780,7 +780,7 @@ export const ReservationView = ({
           </div>
         )}
 
-        {/* STEP 5: Success Confirmation Screen (20a1cb4a7d0148f8b547885731dbe854) */}
+        {/* STEP 5: Success Confirmation Screen */}
         {step === 5 && (
           <div className="relative w-full max-w-3xl text-center flex flex-col items-center animate-fadeIn">
             {/* Ambient background glow & image */}
@@ -803,43 +803,43 @@ export const ReservationView = ({
 
             {/* Header Content */}
             <div className="z-10 space-y-3 mb-10">
-              <h2 className="font-display-lg text-4xl md:text-5xl font-semibold text-on-surface">
+              <h2 className="font-serif text-4xl md:text-5xl font-semibold text-on-surface">
                 Your table is reserved!
               </h2>
-              <div className="inline-block bg-surface-container-low px-4 py-1.5 rounded-full border border-outline-variant/20 shadow-sm">
+              <div className="inline-block bg-surface-container-low px-4 py-1.5 rounded-full border border-outline-variant/20 shadow-sm font-sans">
                 <span className="font-label-sm text-xs uppercase text-secondary tracking-widest font-medium">
                   Confirmation ID: <span className="text-on-surface font-bold">#{confirmationCode}</span>
                 </span>
               </div>
-              <p className="font-body-lg text-secondary max-w-lg mx-auto leading-relaxed text-base pt-2">
+              <p className="font-sans text-base md:text-lg text-secondary max-w-lg mx-auto leading-relaxed pt-2">
                 A confirmation has been sent to <span className="text-on-surface font-semibold">{email}</span> and <span className="text-on-surface font-semibold">{phone}</span>.
               </p>
             </div>
 
             {/* Action Grid (Bento Style) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-12 z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-12 z-10 font-sans">
               {/* Primary Action Card: Add to Calendar */}
               <div className="col-span-1 md:col-span-2 bg-surface-container-lowest p-8 rounded-3xl border border-outline-variant/30 shadow-md flex flex-col md:flex-row items-center justify-between text-left group hover:-translate-y-1 transition-all duration-300">
                 <div className="mb-6 md:mb-0">
-                  <h3 className="font-headline-md text-xl font-bold text-on-surface mb-1">Add to Calendar</h3>
-                  <p className="font-body-md text-sm text-secondary">Ensure you don't miss the moment.</p>
+                  <h3 className="font-serif text-xl font-bold text-on-surface mb-1">Add to Calendar</h3>
+                  <p className="font-sans text-sm text-secondary">Ensure you don't miss the moment.</p>
                 </div>
-                <div className="flex flex-wrap gap-3 justify-center md:justify-end">
+                <div className="flex flex-wrap gap-3 justify-center md:justify-end font-sans">
                   <button
                     onClick={() => onToast('Added to Apple Calendar')}
-                    className="px-5 py-2.5 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 font-body-md text-sm font-semibold text-on-surface"
+                    className="px-5 py-2.5 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 text-sm font-semibold text-on-surface"
                   >
                     <span className="material-symbols-outlined text-lg">event</span> Apple
                   </button>
                   <button
                     onClick={() => onToast('Added to Google Calendar')}
-                    className="px-5 py-2.5 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 font-body-md text-sm font-semibold text-on-surface"
+                    className="px-5 py-2.5 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 text-sm font-semibold text-on-surface"
                   >
                     <span className="material-symbols-outlined text-lg">event_available</span> Google
                   </button>
                   <button
                     onClick={() => onToast('Added to Outlook Calendar')}
-                    className="px-5 py-2.5 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 font-body-md text-sm font-semibold text-on-surface"
+                    className="px-5 py-2.5 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 text-sm font-semibold text-on-surface"
                   >
                     <span className="material-symbols-outlined text-lg">calendar_today</span> Outlook
                   </button>
@@ -856,7 +856,7 @@ export const ReservationView = ({
                     <span className="material-symbols-outlined text-2xl">edit_calendar</span>
                   </div>
                   <div>
-                    <span className="block font-body-md text-base font-bold text-on-surface">Modify Reservation</span>
+                    <span className="block font-sans text-base font-bold text-on-surface">Modify Reservation</span>
                     <span className="block font-label-sm text-xs text-secondary">Change time or party size</span>
                   </div>
                 </div>
@@ -880,7 +880,7 @@ export const ReservationView = ({
                     <span className="material-symbols-outlined text-2xl">event_busy</span>
                   </div>
                   <div>
-                    <span className="block font-body-md text-base font-bold text-on-surface">Cancel Reservation</span>
+                    <span className="block font-sans text-base font-bold text-on-surface">Cancel Reservation</span>
                     <span className="block font-label-sm text-xs text-secondary">No longer able to attend?</span>
                   </div>
                 </div>
@@ -893,7 +893,7 @@ export const ReservationView = ({
             {/* Footer Back Button */}
             <button
               onClick={onNavigateLanding}
-              className="inline-flex items-center gap-2 px-10 py-4 bg-primary text-on-primary rounded-full font-body-md font-semibold text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all z-10 cursor-pointer"
+              className="inline-flex items-center gap-2 px-10 py-4 bg-primary text-on-primary rounded-full font-sans font-semibold text-sm tracking-wide uppercase shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all z-10 cursor-pointer"
             >
               <span>Back to Website</span>
               <span className="material-symbols-outlined">arrow_forward</span>

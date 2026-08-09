@@ -74,10 +74,10 @@ export const OrderOnlineModal = ({ isOpen, onClose, onSuccess }: OrderOnlineModa
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
       <div className="bg-surface w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border border-outline-variant/20 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-6 py-5 bg-surface-container flex items-center justify-between border-b border-outline-variant/20">
+        <div className="px-6 py-5 bg-surface-container flex items-center justify-between border-b border-outline-variant/20 font-sans">
           <div>
-            <span className="font-label-sm text-primary uppercase tracking-widest">Lumière To-Go & Delivery</span>
-            <h3 className="font-headline-md text-on-surface font-semibold">Gourmet Online Order</h3>
+            <span className="font-label-sm text-primary uppercase tracking-[0.2em] font-bold">Lumière To-Go & Delivery</span>
+            <h3 className="font-serif text-2xl text-on-surface font-semibold">Gourmet Online Order</h3>
           </div>
           <button
             onClick={onClose}
@@ -88,17 +88,17 @@ export const OrderOnlineModal = ({ isOpen, onClose, onSuccess }: OrderOnlineModa
         </div>
 
         {/* Menu Items List */}
-        <div className="p-6 overflow-y-auto space-y-4 flex-1">
+        <div className="p-6 overflow-y-auto space-y-4 flex-1 font-sans">
           {MENU_ITEMS.map((item) => (
             <div key={item.id} className="flex gap-4 p-4 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:border-outline-variant transition-all">
               <img src={item.image} alt={item.name} className="w-24 h-24 rounded-lg object-cover" />
               <div className="flex-1 flex flex-col justify-between">
                 <div>
                   <div className="flex justify-between items-start">
-                    <h4 className="font-body-md font-bold text-on-surface">{item.name}</h4>
-                    <span className="font-body-md font-bold text-primary">£{item.price}</span>
+                    <h4 className="font-serif text-lg font-bold text-on-surface">{item.name}</h4>
+                    <span className="font-serif text-lg font-bold text-primary">£{item.price}</span>
                   </div>
-                  <p className="font-body-md text-sm text-secondary line-clamp-2 mt-1">{item.description}</p>
+                  <p className="font-sans text-sm text-secondary line-clamp-2 mt-1">{item.description}</p>
                 </div>
 
                 <div className="flex justify-end items-center gap-3 mt-3">
@@ -107,7 +107,7 @@ export const OrderOnlineModal = ({ isOpen, onClose, onSuccess }: OrderOnlineModa
                       <button onClick={() => updateQuantity(item.id, -1)} className="text-secondary hover:text-on-surface">
                         <span className="material-symbols-outlined text-sm">remove</span>
                       </button>
-                      <span className="font-body-md font-bold text-on-surface">{cart[item.id]}</span>
+                      <span className="font-sans font-bold text-on-surface text-sm">{cart[item.id]}</span>
                       <button onClick={() => updateQuantity(item.id, 1)} className="text-secondary hover:text-on-surface">
                         <span className="material-symbols-outlined text-sm">add</span>
                       </button>
@@ -115,7 +115,7 @@ export const OrderOnlineModal = ({ isOpen, onClose, onSuccess }: OrderOnlineModa
                   ) : (
                     <button
                       onClick={() => updateQuantity(item.id, 1)}
-                      className="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-body-md text-sm font-semibold hover:bg-primary-container transition-all"
+                      className="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-sans text-xs font-bold uppercase tracking-wider hover:bg-primary-container transition-all"
                     >
                       Add to Order
                     </button>
@@ -127,15 +127,15 @@ export const OrderOnlineModal = ({ isOpen, onClose, onSuccess }: OrderOnlineModa
         </div>
 
         {/* Footer & Checkout */}
-        <div className="p-6 bg-surface-container border-t border-outline-variant/20 flex items-center justify-between">
+        <div className="p-6 bg-surface-container border-t border-outline-variant/20 flex items-center justify-between font-sans">
           <div>
-            <div className="text-xs text-secondary font-label-sm uppercase">Total ({totalItems} items)</div>
-            <div className="font-headline-md font-bold text-on-surface">£{totalPrice}</div>
+            <div className="text-xs text-secondary font-label-sm uppercase font-bold tracking-wider">Total ({totalItems} items)</div>
+            <div className="font-serif text-2xl font-bold text-on-surface">£{totalPrice}</div>
           </div>
           <button
             disabled={totalItems === 0}
             onClick={handleCheckout}
-            className={`px-8 py-3 rounded-xl font-body-md font-bold transition-all ${
+            className={`px-8 py-3 rounded-xl font-sans text-xs font-bold uppercase tracking-wider transition-all ${
               totalItems > 0
                 ? 'bg-primary text-on-primary hover:bg-primary-container shadow-md active:scale-95'
                 : 'bg-surface-container-high text-secondary cursor-not-allowed'
