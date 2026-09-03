@@ -6,6 +6,8 @@ interface HeaderProps {
   onNavigateMenu: () => void;
   onNavigateReservations: () => void;
   onToast?: (msg: string) => void;
+  cartUniqueCount?: number;
+  onOpenCart?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -13,22 +15,44 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateLanding,
   onNavigateMenu,
   onNavigateReservations,
+  cartUniqueCount = 0,
+  onOpenCart,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const cartButton = onOpenCart ? (
+    <button
+      type="button"
+      id="header-cart-btn"
+      onClick={onOpenCart}
+      className="relative w-10 h-10 flex items-center justify-center text-on-surface rounded-full hover:bg-surface-container-low transition-colors"
+      aria-label={`Open cart${cartUniqueCount > 0 ? `, ${cartUniqueCount} items` : ''}`}
+    >
+      <span className="material-symbols-outlined text-[22px]">shopping_cart</span>
+      {cartUniqueCount > 0 && (
+        <span
+          key={cartUniqueCount}
+          className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-on-primary text-[10px] font-bold flex items-center justify-center leading-none shadow-sm header-cart-badge-pop"
+        >
+          {cartUniqueCount > 99 ? '99+' : cartUniqueCount}
+        </span>
+      )}
+    </button>
+  ) : null;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.04)] h-20 border-b border-outline-variant/20 transition-all">
       <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-full flex justify-between items-center">
-        {/* Brand Logo */}
         <div
           onClick={onNavigateLanding}
           className="font-serif text-2xl sm:text-3xl tracking-tight font-semibold text-on-surface flex items-center gap-2.5 cursor-pointer group"
         >
-          <span className="material-symbols-outlined text-primary text-2.5xl group-hover:rotate-12 transition-transform duration-300">auto_awesome</span>
+          <span className="material-symbols-outlined text-primary text-2.5xl group-hover:rotate-12 transition-transform duration-300">
+            auto_awesome
+          </span>
           <span className="group-hover:text-primary transition-colors">Lumière</span>
         </div>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-9">
           <button
             onClick={onNavigateLanding}
@@ -62,10 +86,12 @@ export const Header: React.FC<HeaderProps> = ({
           >
             Reservation
           </button>
+
+          {cartButton}
         </nav>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center">
+        <div className="md:hidden flex items-center gap-1">
+          {cartButton}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="w-10 h-10 flex items-center justify-center text-on-surface rounded-full hover:bg-surface-container-low transition-colors"
@@ -76,7 +102,6 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Mobile Dropdown Nav */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-surface border-b border-outline-variant/20 px-6 py-5 space-y-3.5 animate-fadeIn shadow-xl">
           <button

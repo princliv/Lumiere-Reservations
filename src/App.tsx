@@ -5,10 +5,23 @@ import { GalleryLightbox } from './components/GalleryLightbox';
 import { ChefStoryModal } from './components/ChefStoryModal';
 import { Toast } from './components/Toast';
 import { MenuView } from './components/MenuView';
+import { OrderSummaryView } from './components/OrderSummaryView';
 import { ReservationView } from './components/ReservationView';
 import { ScrollToTop } from './components/ScrollToTop';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { CartDrawer } from './components/CartDrawer';
+import {
+  type CartState,
+  getCartCount,
+  getCartUniqueCount,
+  addCartLine,
+  updateCartLineQty,
+  updateItemQty,
+  removeCartLine,
+  removeCartAddon,
+  updateCartLineNote,
+} from './data/menuItems';
 
 interface GalleryItem {
   src: string;
@@ -52,13 +65,67 @@ const GALLERY_IMAGES: GalleryItem[] = [
 ];
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'landing' | 'menu' | 'reservations'>('landing');
+  const [currentPage, setCurrentPage] = useState<'landing' | 'menu' | 'reservations' | 'checkout'>('landing');
+  const [cart, setCart] = useState<CartState>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [isChefStoryOpen, setIsChefStoryOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isStickyShadowed, setIsStickyShadowed] = useState(false);
+
+  const triggerToast = (msg: string) => {
+    setToastMessage(msg);
+  };
+
+  const handleUpdateItemQty = (itemId: string, delta: number) => {
+    setCart((prev) => updateItemQty(prev, itemId, delta));
+  };
+
+  const handleUpdateLineQty = (lineId: string, delta: number) => {
+    setCart((prev) => updateCartLineQty(prev, lineId, delta));
+  };
+
+  const handleRemoveLine = (lineId: string) => {
+    setCart((prev) => removeCartLine(prev, lineId));
+  };
+
+  const handleRemoveAddon = (lineId: string, addonId: string) => {
+    setCart((prev) => removeCartAddon(prev, lineId, addonId));
+  };
+
+  const handleUpdateLineNote = (lineId: string, note: string) => {
+    setCart((prev) => updateCartLineNote(prev, lineId, note));
+  };
+
+  const handleAddToCart = (itemId: string, quantity: number, addonIds: string[] = []) => {
+    setCart((prev) => addCartLine(prev, itemId, quantity, addonIds));
+  };
+
+  const handleCheckout = () => {
+    if (getCartCount(cart) === 0) {
+      triggerToast('Add items to your cart before checkout.');
+      return;
+    }
+    setIsCartOpen(false);
+    setCurrentPage('checkout');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cartUniqueCount = getCartUniqueCount(cart);
+
+  const cartDrawer = (
+    <CartDrawer
+      isOpen={isCartOpen}
+      cart={cart}
+      onClose={() => setIsCartOpen(false)}
+      onUpdateLineQty={handleUpdateLineQty}
+      onRemoveLine={handleRemoveLine}
+      onRemoveAddon={handleRemoveAddon}
+      onCheckout={handleCheckout}
+    />
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,9 +139,31 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const triggerToast = (msg: string) => {
-    setToastMessage(msg);
-  };
+  if (currentPage === 'checkout') {
+    return (
+      <>
+        <OrderSummaryView
+          cart={cart}
+          onClearCart={() => setCart([])}
+          onUpdateLineQty={handleUpdateLineQty}
+          onRemoveLine={handleRemoveLine}
+          onRemoveAddon={handleRemoveAddon}
+          onUpdateLineNote={handleUpdateLineNote}
+          onNavigateLanding={() => setCurrentPage('landing')}
+          onNavigateMenu={() => setCurrentPage('menu')}
+          onNavigateReservations={() => setCurrentPage('reservations')}
+          onToast={triggerToast}
+          cartUniqueCount={cartUniqueCount}
+          onOpenCart={() => setIsCartOpen(true)}
+        />
+        {cartDrawer}
+        <ScrollToTop />
+        {toastMessage && (
+          <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+        )}
+      </>
+    );
+  }
 
   if (currentPage === 'reservations') {
     return (
@@ -83,7 +172,10 @@ function App() {
           onNavigateLanding={() => setCurrentPage('landing')}
           onNavigateMenu={() => setCurrentPage('menu')}
           onToast={triggerToast}
+          cartUniqueCount={cartUniqueCount}
+          onOpenCart={() => setIsCartOpen(true)}
         />
+        {cartDrawer}
         <ScrollToTop />
         {toastMessage && (
           <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
@@ -96,9 +188,15 @@ function App() {
     return (
       <>
         <MenuView
+          cart={cart}
+          onUpdateItemQty={handleUpdateItemQty}
+          onAddToCart={handleAddToCart}
+          onCheckout={handleCheckout}
           onBackToWebsite={() => setCurrentPage('landing')}
           onBookTable={() => setCurrentPage('reservations')}
           onToast={triggerToast}
+          cartUniqueCount={cartUniqueCount}
+          onOpenCart={() => setIsCartOpen(true)}
         />
 
         <ReservationModal
@@ -112,6 +210,7 @@ function App() {
           onClose={() => setIsChefStoryOpen(false)}
         />
 
+        {cartDrawer}
         <ScrollToTop />
 
         {toastMessage && (
@@ -129,6 +228,8 @@ function App() {
         onNavigateMenu={() => setCurrentPage('menu')}
         onNavigateReservations={() => setCurrentPage('reservations')}
         onToast={triggerToast}
+        cartUniqueCount={cartUniqueCount}
+        onOpenCart={() => setIsCartOpen(true)}
       />
 
       <main className="pt-0 flex-1">
@@ -418,6 +519,8 @@ function App() {
         onNavigateReservations={() => setCurrentPage('reservations')}
         onToast={triggerToast}
       />
+
+      {cartDrawer}
 
       {/* Interactive Modals */}
       <ReservationModal
