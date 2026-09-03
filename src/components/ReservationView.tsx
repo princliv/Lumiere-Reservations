@@ -7,12 +7,16 @@ interface ReservationViewProps {
   onNavigateLanding: () => void;
   onNavigateMenu: () => void;
   onToast: (msg: string) => void;
+  cartUniqueCount?: number;
+  onOpenCart?: () => void;
 }
 
 export const ReservationView = ({
   onNavigateLanding,
   onNavigateMenu,
   onToast,
+  cartUniqueCount = 0,
+  onOpenCart,
 }: ReservationViewProps) => {
   const [step, setStep] = useState(1);
   const [partySize, setPartySize] = useState(2);
@@ -157,6 +161,8 @@ export const ReservationView = ({
         onNavigateMenu={onNavigateMenu}
         onNavigateReservations={() => {}}
         onToast={onToast}
+        cartUniqueCount={cartUniqueCount}
+        onOpenCart={onOpenCart}
       />
 
       {/* Main Content */}
