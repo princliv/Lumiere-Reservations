@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ReservationModal } from './components/ReservationModal';
 import { OrderOnlineModal } from './components/OrderOnlineModal';
 import { GalleryLightbox } from './components/GalleryLightbox';
@@ -22,6 +22,33 @@ import {
   removeCartAddon,
   updateCartLineNote,
 } from './data/menuItems';
+
+type AppPage = 'landing' | 'menu' | 'reservations' | 'checkout';
+
+const CART_STORAGE_KEY = 'lumiere-cart';
+
+function pageFromHash(): AppPage {
+  const raw = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+  if (raw === 'menu' || raw === 'reservations' || raw === 'checkout') {
+    return raw;
+  }
+  return 'landing';
+}
+
+function hashForPage(page: AppPage) {
+  return page === 'landing' ? '#/' : `#/${page}`;
+}
+
+function loadCart(): CartState {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 interface GalleryItem {
   src: string;
@@ -65,8 +92,8 @@ const GALLERY_IMAGES: GalleryItem[] = [
 ];
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'landing' | 'menu' | 'reservations' | 'checkout'>('landing');
-  const [cart, setCart] = useState<CartState>([]);
+  const [currentPage, setCurrentPageState] = useState<AppPage>(() => pageFromHash());
+  const [cart, setCart] = useState<CartState>(() => loadCart());
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
   const [isOrderOpen, setIsOrderOpen] = useState(false);
@@ -74,6 +101,27 @@ function App() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isStickyShadowed, setIsStickyShadowed] = useState(false);
+
+  const setCurrentPage = useCallback((page: AppPage) => {
+    setCurrentPageState(page);
+    const next = hashForPage(page);
+    if (window.location.hash !== next) {
+      window.location.hash = next;
+    }
+  }, []);
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const page = pageFromHash();
+      setCurrentPageState(page);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  }, [cart]);
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);

@@ -45,6 +45,7 @@ body {
 /* Custom smooth scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -57,6 +58,33 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
+  background: #817563;
+}
+
+/* Thin scroll track under category pills — cues horizontal swipe */
+.category-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c4b49a rgba(211, 196, 175, 0.35);
+  padding-bottom: 6px;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: block;
+  width: 0;
+  height: 2px;
+}
+
+.category-scroll::-webkit-scrollbar-track {
+  background: rgba(211, 196, 175, 0.35);
+  border-radius: 999px;
+}
+
+.category-scroll::-webkit-scrollbar-thumb {
+  background: #b9a88e;
+  border-radius: 999px;
+}
+
+.category-scroll::-webkit-scrollbar-thumb:hover {
   background: #817563;
 }
 

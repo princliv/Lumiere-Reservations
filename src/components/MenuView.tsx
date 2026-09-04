@@ -208,7 +208,7 @@ export const MenuView = ({
               )}
             </div>
 
-            <div className="flex gap-2.5 overflow-x-auto pb-1 w-full hide-scrollbar">
+            <div className="category-scroll flex gap-2.5 overflow-x-auto w-full">
               {CATEGORY_TABS.map((tab) => (
                 <button
                   key={tab}

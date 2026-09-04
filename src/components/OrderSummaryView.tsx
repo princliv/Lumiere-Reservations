@@ -29,9 +29,61 @@ interface OrderSummaryViewProps {
   onOpenCart?: () => void;
 }
 
-const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; icon: string; filled?: boolean }[] = [
-  { value: 'apple', label: 'Apple Pay', icon: 'apps', filled: true },
-  { value: 'google', label: 'Google Pay', icon: 'payments' },
+/** Official Apple Pay mark treatment: Apple logo + Pay wordmark */
+const ApplePayMark = () => (
+  <span className="inline-flex items-center gap-0.5 text-on-surface" aria-hidden="true">
+    <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="currentColor">
+      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+    </svg>
+    <span
+      className="text-[17px] font-semibold leading-none tracking-tight"
+      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif' }}
+    >
+      Pay
+    </span>
+  </span>
+);
+
+/** Official Google Pay mark treatment: multicolor G + Pay wordmark */
+const GooglePayMark = () => (
+  <span className="inline-flex items-center gap-1.5" aria-hidden="true">
+    <svg viewBox="0 0 48 48" className="h-5 w-5 shrink-0">
+      <path
+        fill="#FFC107"
+        d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+      />
+      <path
+        fill="#FF3D00"
+        d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"
+      />
+      <path
+        fill="#4CAF50"
+        d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+      />
+      <path
+        fill="#1976D2"
+        d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+      />
+    </svg>
+    <span
+      className="text-[16px] font-medium leading-none tracking-tight text-[#3c4043]"
+      style={{ fontFamily: 'Roboto, "Product Sans", Arial, sans-serif' }}
+    >
+      Pay
+    </span>
+  </span>
+);
+
+type PaymentOption = {
+  value: PaymentMethod;
+  label: string;
+  icon?: string;
+  mark?: 'apple' | 'google';
+};
+
+const PAYMENT_OPTIONS: PaymentOption[] = [
+  { value: 'apple', label: 'Apple Pay', mark: 'apple' },
+  { value: 'google', label: 'Google Pay', mark: 'google' },
   { value: 'card', label: 'Credit Card', icon: 'credit_card' },
   { value: 'cash', label: 'Cash', icon: 'account_balance_wallet' },
 ];
@@ -118,6 +170,14 @@ export const OrderSummaryView = ({
           {/* Left: Order Summary */}
           <section className="lg:col-span-5 space-y-6 lg:space-y-8">
             <div>
+              <button
+                type="button"
+                onClick={onNavigateMenu}
+                className="mb-4 text-secondary hover:text-primary font-body-md text-sm flex items-center gap-1.5 transition-colors duration-200"
+              >
+                <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                Back to Menu
+              </button>
               <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-on-surface mb-2 tracking-tight">
                 Order Summary
               </h1>
@@ -264,14 +324,23 @@ export const OrderSummaryView = ({
               </div>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
               <button
                 type="button"
                 onClick={onNavigateMenu}
                 className="text-primary hover:text-tertiary-container font-body-md flex items-center gap-2 transition-colors duration-200"
               >
-                <span className="material-symbols-outlined text-sm">arrow_back</span>
+                <span className="material-symbols-outlined text-sm">add</span>
                 Add More Items
+              </button>
+              <span className="hidden sm:inline text-outline-variant">·</span>
+              <button
+                type="button"
+                onClick={onNavigateMenu}
+                className="text-secondary hover:text-primary font-body-md flex items-center gap-2 transition-colors duration-200"
+              >
+                <span className="material-symbols-outlined text-sm">restaurant_menu</span>
+                Back to Menu
               </button>
             </div>
           </section>
@@ -402,17 +471,21 @@ export const OrderSummaryView = ({
                           checked={payment === option.value}
                           onChange={() => setPayment(option.value)}
                         />
-                        <div className="payment-card flex flex-col items-center justify-center p-3 md:p-4 rounded-xl border border-outline-variant/30 bg-surface peer-checked:border-primary peer-checked:bg-primary-fixed/10 transition-all duration-200">
-                          <span
-                            className={`material-symbols-outlined text-on-surface mb-2 ${
-                              option.filled ? 'filled' : ''
-                            }`}
-                          >
-                            {option.icon}
-                          </span>
-                          <span className="font-label-sm text-on-surface text-[10px] text-center">
-                            {option.label}
-                          </span>
+                        <div className="payment-card flex flex-col items-center justify-center gap-2 p-3 md:p-4 min-h-[88px] rounded-xl border border-outline-variant/30 bg-surface peer-checked:border-primary peer-checked:bg-primary-fixed/10 transition-all duration-200">
+                          {option.mark === 'apple' && <ApplePayMark />}
+                          {option.mark === 'google' && <GooglePayMark />}
+                          {option.icon && (
+                            <span className="material-symbols-outlined text-on-surface text-[28px]">
+                              {option.icon}
+                            </span>
+                          )}
+                          {option.mark ? (
+                            <span className="sr-only">{option.label}</span>
+                          ) : (
+                            <span className="font-label-sm text-on-surface text-[10px] text-center">
+                              {option.label}
+                            </span>
+                          )}
                         </div>
                       </label>
                     ))}
