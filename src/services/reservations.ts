@@ -1,5 +1,5 @@
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const BUSINESS_ID = "lumiere-mayfair";
+const DEFAULT_BUSINESS_ID = "lumiere-mayfair";
 
 export interface AvailabilitySlot {
   time: string;
@@ -46,9 +46,10 @@ export interface ReservationResponse {
 export const getAvailableSlots = async (
   date: string,
   partySize: number,
+  businessId: string = DEFAULT_BUSINESS_ID,
 ): Promise<AvailabilityResponse> => {
   const res = await fetch(
-    `${API_BASE}/api/v1/availability/${BUSINESS_ID}?date=${date}&party_size=${partySize}`,
+    `${API_BASE}/api/v1/availability/${businessId}?date=${date}&party_size=${partySize}`,
   );
   if (!res.ok) throw new Error("Failed to fetch available slots");
   const data = await res.json();
