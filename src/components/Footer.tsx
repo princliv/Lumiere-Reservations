@@ -1,4 +1,5 @@
 import React from 'react';
+import { usePublicData } from '../context/PublicDataContext';
 
 interface FooterProps {
   onNavigateLanding: () => void;
@@ -13,6 +14,13 @@ export const Footer: React.FC<FooterProps> = ({
   onNavigateReservations,
   onToast,
 }) => {
+  const { brand } = usePublicData();
+  const brandName = brand?.restaurantName ?? 'Lumière';
+  const description =
+    brand?.description ??
+    'Experience the invisible excellence of modern French cuisine in the heart of Mayfair. Part of the Haute-Cuisine Group.';
+  const contact = brand?.contact;
+
   return (
     <footer className="bg-[#241F17] text-[#E5D4B3] border-t border-[#C5A059]/30 pt-16 pb-8 w-full mt-auto shadow-2xl relative overflow-hidden">
       {/* Subtle Dusty Gold Ambient Glow Overlay */}
@@ -23,11 +31,9 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="col-span-1 md:col-span-2 space-y-4">
             <h2 className="font-serif text-3xl md:text-4xl tracking-tight font-bold text-white flex items-center gap-2.5">
               <span className="material-symbols-outlined text-[#C5A059] text-3xl">auto_awesome</span>
-              <span className="text-white">Lumière</span>
+              <span className="text-white">{brandName}</span>
             </h2>
-            <p className="font-sans text-sm text-[#D3C4AF] max-w-sm leading-relaxed">
-              Experience the invisible excellence of modern French cuisine in the heart of Mayfair. Part of the Haute-Cuisine Group.
-            </p>
+            <p className="font-sans text-sm text-[#D3C4AF] max-w-sm leading-relaxed">{description}</p>
           </div>
 
           <div>
@@ -59,9 +65,9 @@ export const Footer: React.FC<FooterProps> = ({
           <div>
             <h4 className="font-label-sm text-[#C5A059] uppercase mb-6 font-bold tracking-[0.2em]">Contact</h4>
             <ul className="space-y-3.5 font-sans text-sm text-[#E5D4B3]">
-              <li className="text-[#D3C4AF]">12 Berkeley Square, Mayfair, London</li>
-              <li className="text-[#D3C4AF]">+44 (0) 20 7123 4567</li>
-              <li className="text-[#D3C4AF]">hello@lumiere-dining.com</li>
+              <li className="text-[#D3C4AF]">{contact?.address ?? '12 Berkeley Square, Mayfair, London'}</li>
+              <li className="text-[#D3C4AF]">{contact?.phone ?? '+44 (0) 20 7123 4567'}</li>
+              <li className="text-[#D3C4AF]">{contact?.email ?? 'hello@lumiere-dining.com'}</li>
               <li className="flex space-x-4 pt-3 text-[#C5A059]">
                 <span
                   className="material-symbols-outlined cursor-pointer hover:text-white transition-colors"
@@ -69,12 +75,14 @@ export const Footer: React.FC<FooterProps> = ({
                 >
                   share
                 </span>
-                <span
-                  className="material-symbols-outlined cursor-pointer hover:text-white transition-colors"
-                  onClick={() => onToast?.('Instagram page opened')}
-                >
-                  camera
-                </span>
+                {brand?.socialLinks.instagram && (
+                  <span
+                    className="material-symbols-outlined cursor-pointer hover:text-white transition-colors"
+                    onClick={() => onToast?.('Instagram page opened')}
+                  >
+                    camera
+                  </span>
+                )}
               </li>
             </ul>
           </div>

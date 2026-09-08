@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createReservation } from "../services/api";
+import { createReservation } from "../services/reservations";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 

@@ -12,7 +12,8 @@ export interface MenuItem {
   isVeg?: boolean;
 }
 
-export const ALL_MENU_ITEMS: MenuItem[] = [
+/** Populated from the API at runtime via setMenuCatalog(); this literal array is only the pre-fetch fallback. */
+export let ALL_MENU_ITEMS: MenuItem[] = [
   {
     id: '1',
     name: 'Classic Lumière Burger',
@@ -164,8 +165,8 @@ export interface AddonCategory {
   options: AddonOption[];
 }
 
-/** Customize options shown when adding a dish from the menu. */
-export const ADDON_CATEGORIES: AddonCategory[] = [
+/** Customize options shown when adding a dish from the menu. Populated from the API at runtime via setMenuCatalog(). */
+export let ADDON_CATEGORIES: AddonCategory[] = [
   {
     id: 'beverages',
     name: 'Beverages',
@@ -273,7 +274,14 @@ export const ADDON_CATEGORIES: AddonCategory[] = [
   },
 ];
 
-export const ALL_ADDON_OPTIONS: AddonOption[] = ADDON_CATEGORIES.flatMap((c) => c.options);
+export let ALL_ADDON_OPTIONS: AddonOption[] = ADDON_CATEGORIES.flatMap((c) => c.options);
+
+/** Swaps the catalog backing MenuView/ItemCustomizeModal/cart lookups for API-fetched data, without changing their signatures. */
+export function setMenuCatalog(items: MenuItem[], addonCategories: AddonCategory[]) {
+  ALL_MENU_ITEMS = items;
+  ADDON_CATEGORIES = addonCategories;
+  ALL_ADDON_OPTIONS = addonCategories.flatMap((c) => c.options);
+}
 
 export type CatalogEntry = {
   id: string;

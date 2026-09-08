@@ -14,19 +14,6 @@ import {
   projectUniqueCountAfterAdd,
 } from '../data/menuItems';
 
-const CATEGORY_TABS = [
-  'Popular',
-  'Veg',
-  'Non-Veg',
-  'Starters',
-  'Burgers',
-  'Pizza',
-  'Pasta',
-  'Steaks',
-  'Desserts',
-  'Beverages',
-];
-
 interface MenuViewProps {
   cart: CartState;
   onUpdateItemQty: (itemId: string, delta: number) => void;
@@ -56,6 +43,13 @@ export const MenuView = ({
   const [activeSection, setActiveSection] = useState('popular');
   const [customizeItem, setCustomizeItem] = useState<MenuItem | null>(null);
   const [cartFly, setCartFly] = useState<{ fromCount: number; toCount: number } | null>(null);
+
+  const CATEGORY_TABS = [
+    'Popular',
+    'Veg',
+    'Non-Veg',
+    ...Array.from(new Set(ALL_MENU_ITEMS.map((item) => item.category))),
+  ];
 
   const filteredItems = ALL_MENU_ITEMS.filter((item) => {
     const matchesSearch =

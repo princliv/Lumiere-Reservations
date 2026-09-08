@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { usePublicData } from '../context/PublicDataContext';
 
 interface HeaderProps {
   currentPage: 'landing' | 'menu' | 'reservations';
@@ -19,6 +20,9 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenCart,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { brand, mediaMap } = usePublicData();
+  const brandName = brand?.restaurantName ?? 'Lumière';
+  const logoUrl = brand?.logoMediaId ? mediaMap.get(brand.logoMediaId)?.fileUrl : undefined;
 
   const cartButton = onOpenCart ? (
     <button
@@ -47,10 +51,14 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={onNavigateLanding}
           className="font-serif text-2xl sm:text-3xl tracking-tight font-semibold text-on-surface flex items-center gap-2.5 cursor-pointer group"
         >
-          <span className="material-symbols-outlined text-primary text-2.5xl group-hover:rotate-12 transition-transform duration-300">
-            auto_awesome
-          </span>
-          <span className="group-hover:text-primary transition-colors">Lumière</span>
+          {logoUrl ? (
+            <img src={logoUrl} alt={brandName} className="h-8 w-auto object-contain" />
+          ) : (
+            <span className="material-symbols-outlined text-primary text-2.5xl group-hover:rotate-12 transition-transform duration-300">
+              auto_awesome
+            </span>
+          )}
+          <span className="group-hover:text-primary transition-colors">{brandName}</span>
         </div>
 
         <nav className="hidden md:flex items-center space-x-9">

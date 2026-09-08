@@ -1,4 +1,4 @@
-
+import { usePublicData } from '../context/PublicDataContext';
 
 interface ChefStoryModalProps {
   isOpen: boolean;
@@ -6,7 +6,15 @@ interface ChefStoryModalProps {
 }
 
 export const ChefStoryModal: React.FC<ChefStoryModalProps> = ({ isOpen, onClose }) => {
+  const { sections, mediaMap } = usePublicData();
   if (!isOpen) return null;
+
+  const about = sections.find((s) => s.type === 'about');
+  const content = about?.type === 'about' ? about.content : undefined;
+  const chefName = content?.chefName ?? 'Our Chef';
+  const chefQuote = content?.chefQuote ?? '';
+  const chefBio = content?.chefBio ?? '';
+  const chefImage = content?.chefImageMediaId ? mediaMap.get(content.chefImageMediaId)?.fileUrl : undefined;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fadeIn">
@@ -14,8 +22,8 @@ export const ChefStoryModal: React.FC<ChefStoryModalProps> = ({ isOpen, onClose 
         {/* Header */}
         <div className="px-6 py-5 bg-surface-container flex items-center justify-between border-b border-outline-variant/20 font-sans">
           <div>
-            <span className="font-label-sm text-tertiary uppercase tracking-[0.2em] font-bold">3-Michelin-Starred Executive Chef</span>
-            <h3 className="font-serif text-2xl text-on-surface font-semibold">Chef Marcelle Vignon</h3>
+            <span className="font-label-sm text-tertiary uppercase tracking-[0.2em] font-bold">Executive Chef</span>
+            <h3 className="font-serif text-2xl text-on-surface font-semibold">{chefName}</h3>
           </div>
           <button
             onClick={onClose}
@@ -28,34 +36,20 @@ export const ChefStoryModal: React.FC<ChefStoryModalProps> = ({ isOpen, onClose 
         {/* Content */}
         <div className="p-8 overflow-y-auto space-y-6 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCERWltkKVtse3b_wW36xjpnZH9THUDFygROWcQspdLRJ5HTiu6Q4NBDuP8s0kk_E5oXJtloZBVvgdvk9BSW6eZHPM0JIm2MWQi0JMbTSKmUFPHN4RR69klsdUG0fJLlQmNJl_wd_GzrcIxSvK19U9fBER_3KQL7fA0zIGK-dHc3w62l7nXnZm1R38Mognk_2XXCPih-BC_JYziLjhqu3dAC5c7svqIrWt6KOHKHronMZSMIgEaSepyrh4D-yb3FfW83BWYd5-39AA"
-              alt="Chef Marcelle Vignon"
-              className="w-full aspect-[4/5] object-cover rounded-xl shadow-lg border border-outline-variant/20"
-            />
+            {chefImage && (
+              <img
+                src={chefImage}
+                alt={chefName}
+                className="w-full aspect-[4/5] object-cover rounded-xl shadow-lg border border-outline-variant/20"
+              />
+            )}
             <div className="md:col-span-2 space-y-4">
-              <blockquote className="font-body-lg text-primary font-medium italic border-l-2 border-primary pl-4 py-1">
-                "Culinary art is not found in complexity, but in the radical simplification of a flavor until its soul is revealed. At Lumière, we strip away the noise to let the ingredient speak."
-              </blockquote>
-              <p className="font-body-md text-secondary leading-relaxed">
-                Chef Marcelle Vignon trained under legendary French masters in Lyon and Paris before earning three Michelin stars over a distinguished 20-year career. Her philosophy centers on hyper-seasonal British and French produce transformed through surgical technical precision.
-              </p>
-            </div>
-          </div>
-
-          <hr className="border-outline-variant/20" />
-
-          <div className="space-y-4">
-            <h4 className="font-headline-md text-on-surface font-semibold">Tasting Menu Philosophy</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
-                <div className="font-body-md font-bold text-on-surface mb-1">Seasonal Harmony</div>
-                <p className="font-body-md text-sm text-secondary">Menus change every six weeks to honor micro-seasons and peak flavor profiles.</p>
-              </div>
-              <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
-                <div className="font-body-md font-bold text-on-surface mb-1">Zero-Waste Gastronomy</div>
-                <p className="font-body-md text-sm text-secondary">Every trimming and element is upcycled into house-fermented garums, reductions, and infusions.</p>
-              </div>
+              {chefQuote && (
+                <blockquote className="font-body-lg text-primary font-medium italic border-l-2 border-primary pl-4 py-1">
+                  "{chefQuote}"
+                </blockquote>
+              )}
+              {chefBio && <p className="font-body-md text-secondary leading-relaxed">{chefBio}</p>}
             </div>
           </div>
         </div>
