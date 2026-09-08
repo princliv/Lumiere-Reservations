@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { usePermissions } from '../hooks/usePermissions';
 
@@ -18,6 +19,12 @@ interface NavGroup {
 export function AdminLayout() {
   const { user, logout } = useAuth();
   const perms = usePermissions();
+  const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
 
   const groups: NavGroup[] = [
     { title: '', items: [{ to: '/admin', label: 'Dashboard', icon: 'dashboard', end: true }], visible: true },
@@ -62,11 +69,30 @@ export function AdminLayout() {
   ];
 
   return (
-    <div className="min-h-screen flex bg-surface-container-low font-sans">
-      <aside className="w-64 shrink-0 bg-surface border-r border-outline-variant/20 flex flex-col">
-        <div className="h-16 flex items-center gap-2 px-5 border-b border-outline-variant/20">
+    <div className="h-screen flex bg-surface-container-low font-sans overflow-hidden">
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={`fixed md:static inset-y-0 left-0 z-40 w-64 shrink-0 h-full bg-surface border-r border-outline-variant/20 flex flex-col transform transition-transform duration-200 ease-in-out md:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="h-16 shrink-0 flex items-center gap-2 px-5 border-b border-outline-variant/20">
           <span className="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
           <span className="font-serif text-lg font-bold text-on-surface">Admin Panel</span>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="ml-auto md:hidden p-1 rounded-lg text-secondary hover:bg-surface-container-high"
+            aria-label="Close menu"
+          >
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
         </div>
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
           {groups.filter((g) => g.visible).map((group, idx) => (
@@ -94,7 +120,7 @@ export function AdminLayout() {
             </div>
           ))}
         </nav>
-        <div className="p-4 border-t border-outline-variant/20">
+        <div className="shrink-0 p-4 border-t border-outline-variant/20">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
               {user?.name?.[0] ?? '?'}
@@ -114,11 +140,24 @@ export function AdminLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-x-hidden">
-        <div className="max-w-5xl mx-auto px-6 py-8">
-          <Outlet />
-        </div>
-      </main>
+      <div className="flex-1 flex flex-col h-full min-w-0">
+        <header className="md:hidden shrink-0 h-14 flex items-center gap-3 px-4 border-b border-outline-variant/20 bg-surface">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-1.5 rounded-lg text-secondary hover:bg-surface-container-high"
+            aria-label="Open menu"
+          >
+            <span className="material-symbols-outlined text-[22px]">menu</span>
+          </button>
+          <span className="font-serif text-base font-bold text-on-surface">Admin Panel</span>
+        </header>
+
+        <main className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="max-w-5xl mx-auto px-6 py-8">
+            <Outlet />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

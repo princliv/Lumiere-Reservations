@@ -3,7 +3,7 @@ import { applyTheme } from './applyTheme';
 import type { BrandSettings } from '../types';
 
 interface ThemeProviderProps {
-  brand: Pick<BrandSettings, 'themePresetId' | 'primaryFont' | 'headingFont'> | undefined;
+  brand: Pick<BrandSettings, 'themePresetId' | 'customPrimaryColor' | 'primaryFont' | 'headingFont'> | undefined;
   children: ReactNode;
 }
 

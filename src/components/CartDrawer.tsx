@@ -99,7 +99,7 @@ export const CartDrawer = ({
                       </h3>
                       <div className="flex items-center gap-1.5 flex-shrink-0">
                         <span className="font-sans text-sm font-semibold text-primary whitespace-nowrap">
-                          £{item.lineTotal.toFixed(2)}
+                          ${item.lineTotal.toFixed(2)}
                         </span>
                         <button
                           type="button"
@@ -114,7 +114,7 @@ export const CartDrawer = ({
                     </div>
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-xs text-secondary font-sans">
-                        £{item.unitPrice.toFixed(2)} each
+                        ${item.unitPrice.toFixed(2)} each
                       </span>
                       <div className="flex items-center bg-surface-container-high rounded-lg overflow-hidden border border-outline-variant/30">
                         <button
@@ -153,7 +153,7 @@ export const CartDrawer = ({
                       >
                         <span className="truncate min-w-0">+ {addon.name}</span>
                         <div className="flex items-center gap-1.5 flex-shrink-0">
-                          <span className="whitespace-nowrap">£{addon.price.toFixed(2)}</span>
+                          <span className="whitespace-nowrap">${addon.price.toFixed(2)}</span>
                           <button
                             type="button"
                             onClick={() => onRemoveAddon(item.lineId, addon.id)}
@@ -176,7 +176,7 @@ export const CartDrawer = ({
         <div className="border-t border-outline-variant/20 bg-surface-container-low p-5 space-y-4">
           <div className="flex justify-between items-center">
             <span className="font-sans text-sm text-secondary">Subtotal</span>
-            <span className="font-serif text-xl font-bold text-on-surface">£{subtotal.toFixed(2)}</span>
+            <span className="font-serif text-xl font-bold text-on-surface">${subtotal.toFixed(2)}</span>
           </div>
           <button
             type="button"

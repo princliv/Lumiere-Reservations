@@ -22,8 +22,8 @@ interface SectionRendererProps {
 
 const OFFER_BADGE: Record<Offer['type'], (o: Offer) => string> = {
   percentage: (o) => `${o.discountValue}% OFF`,
-  fixed: (o) => `£${o.discountValue} OFF`,
-  special_price: (o) => `Now £${o.specialPrice}`,
+  fixed: (o) => `$${o.discountValue} OFF`,
+  special_price: (o) => `Now $${o.specialPrice}`,
   bogo: () => 'Buy 1 Get 1',
 };
 

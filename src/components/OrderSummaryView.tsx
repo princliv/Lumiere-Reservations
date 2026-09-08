@@ -138,7 +138,7 @@ export const OrderSummaryView = ({
       setSubmitState('success');
       window.setTimeout(() => {
         onToast(
-          `Order confirmed! Total £${total.toFixed(2)}. ${
+          `Order confirmed! Total $${total.toFixed(2)}. ${
             service === 'delivery' ? 'Preparing for delivery.' : 'Ready for pickup shortly.'
           }`
         );
@@ -212,7 +212,7 @@ export const OrderSummaryView = ({
                           </h3>
                           <div className="flex items-center gap-1.5 flex-shrink-0">
                             <span className="font-body-md text-on-surface whitespace-nowrap">
-                              £{item.lineTotal.toFixed(2)}
+                              ${item.lineTotal.toFixed(2)}
                             </span>
                             <button
                               type="button"
@@ -228,7 +228,7 @@ export const OrderSummaryView = ({
 
                         <div className="flex items-center justify-between gap-3">
                           <span className="text-xs text-secondary font-sans">
-                            £{item.unitPrice.toFixed(2)} each
+                            ${item.unitPrice.toFixed(2)} each
                           </span>
                           <div className="flex items-center bg-surface-container-high rounded-lg overflow-hidden border border-outline-variant/30">
                             <button
@@ -262,7 +262,7 @@ export const OrderSummaryView = ({
                               >
                                 <span className="truncate min-w-0">+ {addon.name}</span>
                                 <div className="flex items-center gap-1.5 flex-shrink-0">
-                                  <span className="whitespace-nowrap">£{addon.price.toFixed(2)}</span>
+                                  <span className="whitespace-nowrap">${addon.price.toFixed(2)}</span>
                                   <button
                                     type="button"
                                     onClick={() => onRemoveAddon(item.lineId, addon.id)}
@@ -303,22 +303,22 @@ export const OrderSummaryView = ({
               <div className="bg-surface-container-low p-5 md:p-6 space-y-3">
                 <div className="flex justify-between text-secondary font-body-md text-sm md:text-base">
                   <span>Subtotal</span>
-                  <span>£{subtotal.toFixed(2)}</span>
+                  <span>${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-secondary font-body-md text-sm md:text-base">
                   <span>Taxes (8.5%)</span>
-                  <span>£{taxes.toFixed(2)}</span>
+                  <span>${taxes.toFixed(2)}</span>
                 </div>
                 {service === 'delivery' && (
                   <div className="flex justify-between text-secondary font-body-md text-sm md:text-base">
                     <span>Delivery Fee</span>
-                    <span>£{deliveryFee.toFixed(2)}</span>
+                    <span>${deliveryFee.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="pt-3 border-t border-outline-variant/30 flex justify-between items-center">
                   <span className="font-serif text-lg md:text-xl text-on-surface font-semibold">Total</span>
                   <span className="font-serif text-lg md:text-xl text-primary font-bold">
-                    £{total.toFixed(2)}
+                    ${total.toFixed(2)}
                   </span>
                 </div>
               </div>

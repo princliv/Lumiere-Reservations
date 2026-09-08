@@ -343,7 +343,7 @@ function AppShell() {
                     <span>Payment</span> <span className="text-on-surface font-semibold">Visa, MC, AMEX</span>
                   </li>
                   <li className="flex justify-between">
-                    <span>Corkage</span> <span className="text-on-surface font-semibold">£50 per bottle</span>
+                    <span>Corkage</span> <span className="text-on-surface font-semibold">$50 per bottle</span>
                   </li>
                 </ul>
               </div>

@@ -91,7 +91,7 @@ export function MenuItemFormPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-on-surface mb-1.5">Price (£) *</label>
+            <label className="block text-sm font-semibold text-on-surface mb-1.5">Price ($) *</label>
             <input
               type="number"
               min={0}

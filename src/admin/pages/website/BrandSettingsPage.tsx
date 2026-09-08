@@ -68,7 +68,11 @@ export function BrandSettingsPage() {
         </section>
 
         <section>
-          <ColorTokenSelect value={draft.themePresetId} onChange={(themePresetId) => setDraft({ ...draft, themePresetId })} />
+          <ColorTokenSelect
+            themePresetId={draft.themePresetId}
+            customPrimaryColor={draft.customPrimaryColor}
+            onChange={(value) => setDraft({ ...draft, ...value })}
+          />
         </section>
 
         <p className="text-xs text-secondary">

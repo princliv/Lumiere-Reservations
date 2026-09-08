@@ -62,7 +62,7 @@ export const FeaturedMenuSection = ({ content, items, onViewMenu }: FeaturedMenu
                 <div className="flex justify-between items-start gap-2 mb-1.5">
                   <h3 className="font-serif text-lg font-bold text-on-surface leading-tight">{item.name}</h3>
                   <span className="font-serif text-lg text-primary font-bold whitespace-nowrap">
-                    £{item.price.toFixed(2)}
+                    ${item.price.toFixed(2)}
                   </span>
                 </div>
                 <p className="text-secondary font-sans text-sm line-clamp-2 leading-relaxed">{item.description}</p>

@@ -67,7 +67,11 @@ export function HeaderSettingsPage() {
           />
         </div>
 
-        <ColorTokenSelect value={draft.themePresetId} onChange={(themePresetId) => setDraft({ ...draft, themePresetId })} />
+        <ColorTokenSelect
+          themePresetId={draft.themePresetId}
+          customPrimaryColor={draft.customPrimaryColor}
+          onChange={(value) => setDraft({ ...draft, ...value })}
+        />
         <p className="text-xs text-secondary -mt-3">Header background, text and button colors follow this site-wide theme.</p>
       </div>
     </div>

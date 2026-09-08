@@ -67,7 +67,10 @@ export interface ThemePreset {
   };
 }
 
-/** Named, contrast-checked presets - admins pick one, never a raw hex/RGB channel (plan §41/§53). */
+/** Selecting this id means the admin has picked a custom color instead of a named preset. */
+export const CUSTOM_THEME_ID = 'custom';
+
+/** Named, contrast-checked presets. Admins may also pick a custom color (see CUSTOM_THEME_ID), which is run through generatePaletteFromColor for contrast-safe derived tones. */
 export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'dusty-gold',
@@ -133,6 +136,7 @@ export interface BrandSettings extends Tenant, Timestamps {
   logoMediaId: Id | null;
   faviconMediaId: Id | null;
   themePresetId: string;
+  customPrimaryColor?: string;
   primaryFont: FontOption;
   headingFont: FontOption;
   fontWeight: FontWeight;

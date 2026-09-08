@@ -51,7 +51,7 @@ export function AddonsPage() {
         columns={[
           { header: 'Name', render: (a) => <span className="font-semibold text-on-surface">{a.name}</span> },
           { header: 'Group', render: (a) => a.group ?? '—' },
-          { header: 'Price', render: (a) => `£${a.price.toFixed(2)}` },
+          { header: 'Price', render: (a) => `$${a.price.toFixed(2)}` },
           {
             header: 'Available',
             render: (a) => <ToggleField label="" checked={a.isAvailable} onChange={(isAvailable) => updateAddon.mutate({ addonId: a.id, payload: { isAvailable } })} />,
@@ -81,7 +81,7 @@ export function AddonsPage() {
               <input value={form.name ?? ''} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 text-sm rounded-lg border border-outline-variant/40 bg-surface" />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-on-surface mb-1.5">Price (£)</label>
+              <label className="block text-sm font-semibold text-on-surface mb-1.5">Price ($)</label>
               <input type="number" step={0.01} value={form.price ?? 0} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} className="w-full px-3 py-2 text-sm rounded-lg border border-outline-variant/40 bg-surface" />
             </div>
             <div>

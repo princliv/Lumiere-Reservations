@@ -65,7 +65,7 @@ export const OrderOnlineModal = ({ isOpen, onClose, onSuccess }: OrderOnlineModa
 
   const handleCheckout = () => {
     if (totalItems === 0) return;
-    onSuccess(`Online Order Placed! Total £${totalPrice}. Delivery prepared by Lumière team.`);
+    onSuccess(`Online Order Placed! Total $${totalPrice}. Delivery prepared by Lumière team.`);
     setCart({});
     onClose();
   };
@@ -96,7 +96,7 @@ export const OrderOnlineModal = ({ isOpen, onClose, onSuccess }: OrderOnlineModa
                 <div>
                   <div className="flex justify-between items-start">
                     <h4 className="font-serif text-lg font-bold text-on-surface">{item.name}</h4>
-                    <span className="font-serif text-lg font-bold text-primary">£{item.price}</span>
+                    <span className="font-serif text-lg font-bold text-primary">${item.price}</span>
                   </div>
                   <p className="font-sans text-sm text-secondary line-clamp-2 mt-1">{item.description}</p>
                 </div>
@@ -130,7 +130,7 @@ export const OrderOnlineModal = ({ isOpen, onClose, onSuccess }: OrderOnlineModa
         <div className="p-6 bg-surface-container border-t border-outline-variant/20 flex items-center justify-between font-sans">
           <div>
             <div className="text-xs text-secondary font-label-sm uppercase font-bold tracking-wider">Total ({totalItems} items)</div>
-            <div className="font-serif text-2xl font-bold text-on-surface">£{totalPrice}</div>
+            <div className="font-serif text-2xl font-bold text-on-surface">${totalPrice}</div>
           </div>
           <button
             disabled={totalItems === 0}

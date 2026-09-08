@@ -365,7 +365,7 @@ export const MenuView = ({
                 </span>
                 <span className="opacity-50">•</span>
                 <span className="font-serif text-2xl font-bold text-primary-fixed-dim">
-                  £{totalCartPrice.toFixed(2)}
+                  ${totalCartPrice.toFixed(2)}
                 </span>
               </div>
             </div>
@@ -432,7 +432,7 @@ const MenuItemCard = ({ item, qty, onUpdateQty, onAdd }: MenuItemCardProps) => {
         <div>
           <div className="flex justify-between items-start mb-1.5 gap-2">
             <h3 className="font-serif text-lg font-bold text-on-surface leading-tight">{item.name}</h3>
-            <span className="font-serif text-xl text-primary font-bold">£{item.price.toFixed(2)}</span>
+            <span className="font-serif text-xl text-primary font-bold">${item.price.toFixed(2)}</span>
           </div>
           <p className="text-secondary font-sans text-sm line-clamp-2 mb-3 leading-relaxed">{item.description}</p>
           <div className="flex items-center gap-3 text-xs text-secondary font-sans">

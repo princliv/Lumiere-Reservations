@@ -29,7 +29,7 @@ export function AddonAssignmentField({ allAddons, selectedIds, onChange }: Addon
             <input type="checkbox" checked={selectedIds.includes(addon.id)} onChange={() => toggle(addon.id)} className="accent-primary" />
             <span className="text-sm font-medium text-on-surface">{addon.name}</span>
           </span>
-          <span className="text-sm font-semibold text-primary">£{addon.price.toFixed(2)}</span>
+          <span className="text-sm font-semibold text-primary">${addon.price.toFixed(2)}</span>
         </label>
       ))}
     </div>

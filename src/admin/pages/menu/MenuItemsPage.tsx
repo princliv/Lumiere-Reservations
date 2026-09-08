@@ -57,7 +57,7 @@ export function MenuItemsPage() {
             {item.imageUrl && <img src={item.imageUrl} alt={item.name} className="w-14 h-14 rounded-lg object-cover shrink-0" />}
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-on-surface truncate">{item.name}</div>
-              <div className="text-xs text-secondary">{categoryName.get(item.categoryId) ?? 'Uncategorized'} · £{item.price.toFixed(2)}</div>
+              <div className="text-xs text-secondary">{categoryName.get(item.categoryId) ?? 'Uncategorized'} · ${item.price.toFixed(2)}</div>
             </div>
             {item.isFeatured && <StatusPill label="Featured" tone="positive" />}
             <ToggleField

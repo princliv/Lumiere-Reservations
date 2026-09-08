@@ -108,12 +108,12 @@ export function OffersPage() {
               </div>
               {form.type === 'special_price' ? (
                 <div>
-                  <label className="block text-sm font-semibold text-on-surface mb-1.5">Special Price (£)</label>
+                  <label className="block text-sm font-semibold text-on-surface mb-1.5">Special Price ($)</label>
                   <input type="number" value={form.specialPrice ?? 0} onChange={(e) => setForm({ ...form, specialPrice: Number(e.target.value) })} className="w-full px-3 py-2 text-sm rounded-lg border border-outline-variant/40 bg-surface" />
                 </div>
               ) : form.type !== 'bogo' ? (
                 <div>
-                  <label className="block text-sm font-semibold text-on-surface mb-1.5">Discount Value {form.type === 'percentage' ? '(%)' : '(£)'}</label>
+                  <label className="block text-sm font-semibold text-on-surface mb-1.5">Discount Value {form.type === 'percentage' ? '(%)' : '($)'}</label>
                   <input type="number" value={form.discountValue ?? 0} onChange={(e) => setForm({ ...form, discountValue: Number(e.target.value) })} className="w-full px-3 py-2 text-sm rounded-lg border border-outline-variant/40 bg-surface" />
                 </div>
               ) : null}

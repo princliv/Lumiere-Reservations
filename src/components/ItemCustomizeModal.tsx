@@ -72,7 +72,7 @@ export const ItemCustomizeModal = ({ item, onClose, onConfirm }: ItemCustomizeMo
           </button>
           <div className="absolute bottom-4 left-4 right-14 text-white">
             <h2 className="font-serif text-2xl font-semibold leading-tight">{item.name}</h2>
-            <p className="font-sans text-sm text-white/80 mt-1">£{item.price.toFixed(2)}</p>
+            <p className="font-sans text-sm text-white/80 mt-1">${item.price.toFixed(2)}</p>
           </div>
         </div>
 
@@ -116,7 +116,7 @@ export const ItemCustomizeModal = ({ item, onClose, onConfirm }: ItemCustomizeMo
                         <div className="flex justify-between gap-3">
                           <span className="font-sans text-sm font-semibold text-on-surface">{option.name}</span>
                           <span className="font-sans text-sm font-semibold text-primary whitespace-nowrap">
-                            +£{option.price.toFixed(2)}
+                            +${option.price.toFixed(2)}
                           </span>
                         </div>
                         {option.description && (
@@ -156,7 +156,7 @@ export const ItemCustomizeModal = ({ item, onClose, onConfirm }: ItemCustomizeMo
             </div>
             <div className="text-right">
               <div className="font-label-sm text-[10px] uppercase tracking-widest text-secondary">Total</div>
-              <div className="font-serif text-xl font-bold text-primary">£{grandTotal.toFixed(2)}</div>
+              <div className="font-serif text-xl font-bold text-primary">${grandTotal.toFixed(2)}</div>
             </div>
           </div>
 
@@ -167,7 +167,7 @@ export const ItemCustomizeModal = ({ item, onClose, onConfirm }: ItemCustomizeMo
           >
             <span>Add to Cart</span>
             <span className="opacity-80">·</span>
-            <span>£{grandTotal.toFixed(2)}</span>
+            <span>${grandTotal.toFixed(2)}</span>
           </button>
         </div>
       </div>

@@ -883,7 +883,7 @@ export const ReservationView = ({
                     deposit, please cancel at least{" "}
                     <span className="font-bold text-on-surface">24 hours</span>{" "}
                     prior to your reservation. Cancellations made within 24
-                    hours may incur a flat fee of £25 per guest.
+                    hours may incur a flat fee of $25 per guest.
                   </p>
                   <div className="flex items-center gap-3 text-on-tertiary-fixed-variant bg-tertiary-fixed/20 p-4 rounded-xl border border-tertiary/20">
                     <span className="material-symbols-outlined text-xl">
@@ -905,7 +905,7 @@ export const ReservationView = ({
                     <div className="flex justify-between text-sm">
                       <span className="text-secondary">Booking Fee</span>
                       <span className="text-on-surface font-semibold">
-                        £0.00
+                        $0.00
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
