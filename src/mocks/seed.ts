@@ -494,7 +494,7 @@ function buildSeed(): MockDbShape {
         eyebrow: 'Chef Selection',
         heading: 'Featured Dishes',
         description: 'A curated selection from our kitchen, chosen by Chef Vignon.',
-        selectedItemIds: [],
+        selectedItemIds: ['1', '2', '5', '7'],
       },
     },
     {
@@ -560,6 +560,19 @@ function buildSeed(): MockDbShape {
     orders,
     reservations,
     reservationAvailability: { [RESTAURANT_ID]: reservationAvailabilitySettings },
+  };
+}
+
+export function getFallbackPublicData() {
+  const seed = buildSeed();
+  return {
+    brand: seed.brand[RESTAURANT_ID].published,
+    sections: seed.homepage[RESTAURANT_ID].published.sections,
+    media: seed.media,
+    categories: seed.categories,
+    items: seed.items,
+    addons: seed.addons,
+    offers: seed.offers,
   };
 }
 

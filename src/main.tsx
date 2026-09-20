@@ -7,9 +7,16 @@ import { AdminApp } from './admin/AdminApp';
 import { queryClient } from './queryClient';
 
 async function bootstrap() {
-  if (import.meta.env.DEV && import.meta.env.VITE_USE_MOCKS !== 'false') {
-    const { worker } = await import('./mocks/browser');
-    await worker.start({ onUnhandledRequest: 'bypass' });
+  if (import.meta.env.VITE_USE_MOCKS !== 'false') {
+    try {
+      const { worker } = await import('./mocks/browser');
+      await worker.start({
+        onUnhandledRequest: 'bypass',
+        serviceWorker: { url: '/mockServiceWorker.js' },
+      });
+    } catch {
+      // Public pages fall back to seeded content if the mock worker cannot start.
+    }
   }
 
   const isAdmin = window.location.pathname.startsWith('/admin');

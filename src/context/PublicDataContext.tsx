@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurant } from "./RestaurantContext";
 import { getHomepage } from "../services/homepage";
@@ -7,6 +7,7 @@ import { getMenu } from "../services/menu";
 import { getAddons } from "../services/addons";
 import { getOffers } from "../services/offers";
 import { getMedia } from "../services/media";
+import { getFallbackPublicData } from "../mocks/seed";
 import {
   setMenuCatalog,
   type AddonCategory,
@@ -34,6 +35,17 @@ interface PublicDataValue {
 }
 
 const PublicDataContext = createContext<PublicDataValue | undefined>(undefined);
+
+function mergeHomepageSections(
+  apiSections: HomepageSection[],
+  fallbackSections: HomepageSection[],
+) {
+  if (!apiSections.length) return fallbackSections;
+  const have = new Set(apiSections.map((section) => section.type));
+  const missing = fallbackSections.filter((section) => !have.has(section.type));
+  if (!missing.length) return apiSections;
+  return [...apiSections, ...missing].sort((a, b) => a.order - b.order);
+}
 
 function toFoodTypeVeg(foodType: MenuItem["foodType"]) {
   return foodType === "veg" || foodType === "vegan";
@@ -119,34 +131,33 @@ export function PublicDataProvider({ children }: { children: ReactNode }) {
     queryFn: () => getMedia(restaurantId),
   });
 
-  const items = menuQuery.data?.items ?? [];
-  const categories = menuQuery.data?.categories ?? [];
-  const addons = addonsQuery.data ?? [];
+  const fallback = useMemo(() => getFallbackPublicData(), []);
+
+  const items = menuQuery.data?.items?.length ? menuQuery.data.items : fallback.items;
+  const categories = menuQuery.data?.categories?.length ? menuQuery.data.categories : fallback.categories;
+  const addons = addonsQuery.data?.length ? addonsQuery.data : fallback.addons;
 
   useEffect(() => {
-    if (menuQuery.data && addonsQuery.data) {
-      setMenuCatalog(
-        adaptItems(menuQuery.data.items, menuQuery.data.categories),
-        adaptAddons(addonsQuery.data),
-      );
-    }
-  }, [menuQuery.data, addonsQuery.data]);
+    setMenuCatalog(adaptItems(items, categories), adaptAddons(addons));
+  }, [items, categories, addons]);
 
   const isLoading = homepageQuery.isLoading || brandQuery.isLoading;
 
-  const mediaMap = new Map(
-    (mediaQuery.data?.items ?? []).map((m) => [m.id, m]),
-  );
+  const mediaItems = mediaQuery.data?.items?.length ? mediaQuery.data.items : fallback.media;
+  const mediaMap = new Map(mediaItems.map((m) => [m.id, m]));
+  const sections = homepageQuery.isLoading
+    ? []
+    : mergeHomepageSections(homepageQuery.data?.sections ?? [], fallback.sections);
 
   const value: PublicDataValue = {
     isLoading,
-    brand: brandQuery.data,
-    sections: homepageQuery.data?.sections ?? [],
+    brand: brandQuery.data ?? (brandQuery.isLoading ? undefined : fallback.brand),
+    sections,
     mediaMap,
     categories,
     items,
     addons,
-    offers: offersQuery.data ?? [],
+    offers: offersQuery.data?.length ? offersQuery.data : fallback.offers,
   };
 
   return (

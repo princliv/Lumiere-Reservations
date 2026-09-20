@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { BrowserRouter, useLocation, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { ReservationModal } from './components/ReservationModal';
 import { OrderOnlineModal } from './components/OrderOnlineModal';
@@ -35,20 +36,23 @@ type AppPage = 'landing' | 'menu' | 'reservations' | 'checkout';
 
 const CART_STORAGE_KEY = 'lumiere-cart';
 
+const PAGE_PATH: Record<AppPage, string> = {
+  landing: '/',
+  menu: '/menu',
+  reservations: '/reservations',
+  checkout: '/checkout',
+};
+
 const DAY_LABEL: Record<string, string> = {
   mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun',
 };
 
-function pageFromHash(): AppPage {
-  const raw = window.location.hash.replace(/^#\/?/, '').toLowerCase();
-  if (raw === 'menu' || raw === 'reservations' || raw === 'checkout') {
-    return raw;
-  }
+function pageFromPath(pathname: string): AppPage {
+  const raw = pathname.replace(/\/+$/, '') || '/';
+  if (raw === '/menu') return 'menu';
+  if (raw === '/reservations') return 'reservations';
+  if (raw === '/checkout') return 'checkout';
   return 'landing';
-}
-
-function hashForPage(page: AppPage) {
-  return page === 'landing' ? '#/' : `#/${page}`;
 }
 
 function loadCart(): CartState {
@@ -64,7 +68,9 @@ function loadCart(): CartState {
 
 function AppShell() {
   const { brand, sections, mediaMap, items, offers, isLoading } = usePublicData();
-  const [currentPage, setCurrentPageState] = useState<AppPage>(() => pageFromHash());
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPage = pageFromPath(location.pathname);
   const [cart, setCart] = useState<CartState>(() => loadCart());
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
@@ -75,21 +81,19 @@ function AppShell() {
   const [isStickyShadowed, setIsStickyShadowed] = useState(false);
 
   const setCurrentPage = useCallback((page: AppPage) => {
-    setCurrentPageState(page);
-    const next = hashForPage(page);
-    if (window.location.hash !== next) {
-      window.location.hash = next;
+    const next = PAGE_PATH[page];
+    if (location.pathname !== next) {
+      navigate(next);
     }
-  }, []);
+  }, [location.pathname, navigate]);
 
   useEffect(() => {
-    const onHashChange = () => {
-      const page = pageFromHash();
-      setCurrentPageState(page);
-    };
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
+    const raw = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+    if (!window.location.hash) return;
+    const path =
+      raw === 'menu' || raw === 'reservations' || raw === 'checkout' ? `/${raw}` : '/';
+    navigate(path, { replace: true });
+  }, [navigate]);
 
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
@@ -430,11 +434,13 @@ function ThemedShell() {
 
 function App() {
   return (
-    <PublicRestaurantProvider>
-      <PublicDataProvider>
-        <ThemedShell />
-      </PublicDataProvider>
-    </PublicRestaurantProvider>
+    <BrowserRouter>
+      <PublicRestaurantProvider>
+        <PublicDataProvider>
+          <ThemedShell />
+        </PublicDataProvider>
+      </PublicRestaurantProvider>
+    </BrowserRouter>
   );
 }
 
