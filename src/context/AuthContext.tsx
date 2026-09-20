@@ -4,6 +4,8 @@ import { setAuthToken } from '../services/http';
 import type { Permission, Role, User } from '../types';
 
 const TOKEN_STORAGE_KEY = 'lumiere-cms-token';
+const DEV_AUTO_LOGIN_EMAIL = 'owner@lumiere.com';
+const DEV_AUTO_LOGIN_PASSWORD = 'password123';
 
 const ROLE_DEFAULT_PERMISSIONS: Record<Role, Permission> = {
   super_admin: { menu: true, branding: true, homepage: true, media: true, offers: true, addons: true, settings: true, users: true },
@@ -30,20 +32,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
-    setAuthToken(token);
-    authService
-      .getCurrentUser()
-      .then(({ user }) => setUser(user))
-      .catch(() => {
-        localStorage.removeItem(TOKEN_STORAGE_KEY);
-        setAuthToken(null);
-      })
-      .finally(() => setIsLoading(false));
+    let cancelled = false;
+
+    const applySession = (token: string, nextUser: User) => {
+      localStorage.setItem(TOKEN_STORAGE_KEY, token);
+      setAuthToken(token);
+      setUser(nextUser);
+    };
+
+    const autoLogin = async () => {
+      if (!import.meta.env.DEV) return;
+      const session = await authService.login({
+        email: DEV_AUTO_LOGIN_EMAIL,
+        password: DEV_AUTO_LOGIN_PASSWORD,
+      });
+      if (!cancelled) applySession(session.token, session.user);
+    };
+
+    const restore = async () => {
+      const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+      if (token) {
+        setAuthToken(token);
+        try {
+          const { user } = await authService.getCurrentUser();
+          if (!cancelled) setUser(user);
+          return;
+        } catch {
+          localStorage.removeItem(TOKEN_STORAGE_KEY);
+          setAuthToken(null);
+        }
+      }
+
+      try {
+        await autoLogin();
+      } catch {
+        // Stay logged out if mock/API login is unavailable.
+      }
+    };
+
+    restore().finally(() => {
+      if (!cancelled) setIsLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const login = async (email: string, password: string) => {

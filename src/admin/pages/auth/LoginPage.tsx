@@ -1,13 +1,13 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 
 export function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation() as { state?: { from?: string } };
   const [email, setEmail] = useState('owner@lumiere.com');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('password123');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,6 +24,11 @@ export function LoginPage() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) return null;
+  if (isAuthenticated) {
+    return <Navigate to={location.state?.from ?? '/admin'} replace />;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
