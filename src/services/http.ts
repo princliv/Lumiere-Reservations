@@ -1,6 +1,8 @@
 import type { ApiErrorBody } from '../types';
 
-const BASE_URL = import.meta.env.VITE_ADMIN_API_URL ?? 'http://localhost:5000';
+const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
+/** Same-origin when mocks are on so MSW can intercept login instead of leaking to :5000. */
+const BASE_URL = USE_MOCKS ? '' : (import.meta.env.VITE_ADMIN_API_URL ?? 'http://localhost:5000');
 
 export class ApiError extends Error {
   status: number;

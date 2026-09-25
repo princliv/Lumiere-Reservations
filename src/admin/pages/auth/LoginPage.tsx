@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
+import { ApiError } from '../../../services/http';
 
 export function LoginPage() {
   const { login, isAuthenticated, isLoading } = useAuth();
@@ -16,10 +17,16 @@ export function LoginPage() {
     setError(null);
     setIsSubmitting(true);
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       navigate(location.state?.from ?? '/admin', { replace: true });
-    } catch {
-      setError('Incorrect email or password.');
+    } catch (err) {
+      if (err instanceof ApiError && (err.status === 401 || err.code === 'invalid_credentials')) {
+        setError('Incorrect email or password.');
+      } else if (err instanceof TypeError || (err instanceof ApiError && err.status >= 500)) {
+        setError('Could not reach the login service. Wait a moment and try again.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Sign in failed. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }

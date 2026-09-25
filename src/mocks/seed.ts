@@ -576,10 +576,26 @@ export function getFallbackPublicData() {
   };
 }
 
+const DEMO_EMAILS = ['owner@lumiere.com', 'staff@lumiere.com', 'admin@platform.com'];
+
+function hasDemoUsers() {
+  const emails = new Set(db.data.users.map((u) => u.email.toLowerCase()));
+  return DEMO_EMAILS.every((email) => emails.has(email));
+}
+
 export function ensureSeeded() {
   if (db.isEmpty()) {
     db.reset(buildSeed());
+    return;
   }
+  if (hasDemoUsers()) return;
+  const seeded = buildSeed().users;
+  for (const user of seeded) {
+    if (!db.data.users.some((u) => u.email.toLowerCase() === user.email.toLowerCase())) {
+      db.data.users.push(user);
+    }
+  }
+  db.save();
 }
 
 export function resetSeed() {
