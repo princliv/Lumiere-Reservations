@@ -10,6 +10,9 @@ async function bootstrap() {
   if (import.meta.env.DEV && import.meta.env.VITE_USE_MOCKS === 'true') {
     const { worker } = await import('./mocks/browser');
     await worker.start({ onUnhandledRequest: 'bypass' });
+    const { keepMockWorkerAttached } = await import('./mocks/keepAttached');
+    const { setMockRecovery } = await import('./services/mockRecovery');
+    setMockRecovery(keepMockWorkerAttached());
   }
 
   // The platform's own paths (login, super-admin login, and the bare root) always render the admin
