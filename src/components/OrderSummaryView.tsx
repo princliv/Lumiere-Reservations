@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import {
@@ -7,15 +7,18 @@ import {
   getCartSubtotal,
 } from '../data/menuItems';
 import { useRestaurant } from '../context/RestaurantContext';
-import { createOrder } from '../services/orders';
-import type { OrderLineItem } from '../types';
+import { createOrderCheckout } from '../services/orders';
+import { getPayment, retryPayment, submitCard, waitForPayment } from '../services/payments';
+import type { CheckoutSession } from '../types';
+import { FinixCardForm } from './FinixCardForm';
+import { usePageContent } from '../context/usePageContent';
 
 const TAX_RATE = 0.085;
 const DELIVERY_FEE = 15;
 
 type ServiceType = 'delivery' | 'pickup';
-type PaymentMethod = 'apple' | 'google' | 'card' | 'cash';
-type SubmitState = 'idle' | 'verifying' | 'success';
+type PaymentMethod = 'card';
+type SubmitState = 'idle' | 'verifying' | 'paying' | 'success';
 
 interface OrderSummaryViewProps {
   cart: CartState;
@@ -79,16 +82,14 @@ const GooglePayMark = () => (
 
 type PaymentOption = {
   value: PaymentMethod;
-  label: string;
+  /** Page Content key (checkout) for the option's label. */
+  labelKey: string;
   icon?: string;
   mark?: 'apple' | 'google';
 };
 
 const PAYMENT_OPTIONS: PaymentOption[] = [
-  { value: 'apple', label: 'Apple Pay', mark: 'apple' },
-  { value: 'google', label: 'Google Pay', mark: 'google' },
-  { value: 'card', label: 'Credit Card', icon: 'credit_card' },
-  { value: 'cash', label: 'Cash', icon: 'account_balance_wallet' },
+  { value: 'card', labelKey: 'paymentCardLabel', icon: 'credit_card' },
 ];
 
 export const OrderSummaryView = ({
@@ -106,20 +107,33 @@ export const OrderSummaryView = ({
   onOpenCart,
 }: OrderSummaryViewProps) => {
   const [service, setService] = useState<ServiceType>('delivery');
-  const [payment, setPayment] = useState<PaymentMethod>('apple');
+  const [payment, setPayment] = useState<PaymentMethod>('card');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [instructions, setInstructions] = useState('');
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
+  const [checkoutSession, setCheckoutSession] = useState<CheckoutSession | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const { restaurantId } = useRestaurant();
+  const c = usePageContent('checkout');
+  const taxRateLabel = String(Number((TAX_RATE * 100).toFixed(2)));
 
   const lineItems = getCartLineItems(cart);
   const subtotal = getCartSubtotal(cart);
   const taxes = subtotal * TAX_RATE;
   const deliveryFee = service === 'delivery' ? DELIVERY_FEE : 0;
   const total = subtotal + taxes + deliveryFee;
+  const displayedSubtotal = checkoutSession?.order?.subtotal ?? subtotal;
+  const displayedTaxes = checkoutSession?.order?.taxes ?? taxes;
+  const displayedDeliveryFee = checkoutSession?.order?.deliveryFee ?? deliveryFee;
+  const displayedTotal = checkoutSession?.order?.total ?? total;
+
+  useEffect(() => {
+    setCheckoutSession(null);
+    setPaymentError(null);
+  }, [cart]);
 
   useEffect(() => {
     if (lineItems.length === 0 && submitState === 'idle') {
@@ -127,57 +141,121 @@ export const OrderSummaryView = ({
     }
   }, [lineItems.length, onNavigateMenu, submitState]);
 
+  useEffect(() => {
+    if (!checkoutSession || !['pending', 'provider_unknown'].includes(checkoutSession.status)) return;
+    let active = true;
+    const timer = window.setInterval(async () => {
+      try {
+        const result = await getPayment(checkoutSession);
+        if (!active) return;
+        setCheckoutSession(result);
+        if (result.status === 'succeeded' && result.fulfillmentStatus === 'completed') {
+          window.clearInterval(timer);
+          onToast(c.text('paymentSuccessToast', { number: result.order?.orderNumber ?? '' }));
+          onClearCart();
+          onNavigateMenu();
+        } else if (result.status === 'failed') {
+          window.clearInterval(timer);
+          setPaymentError(result.failure?.message ?? c.text('cardDeclinedError'));
+        }
+      } catch {
+        // Keep polling transient status failures while this checkout remains open.
+      }
+    }, 3000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [c, checkoutSession, onClearCart, onNavigateMenu, onToast]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitState !== 'idle') return;
 
     if (service === 'delivery' && !address.trim()) {
-      onToast('Please enter a delivery address.');
+      onToast(c.text('addressRequiredToast'));
       return;
     }
 
     setSubmitState('verifying');
 
-    const orderItems: OrderLineItem[] = lineItems.map((item) => ({
-      itemId: item.itemId,
-      name: item.name,
-      quantity: item.quantity,
-      unitPrice: item.unitPrice,
-      lineTotal: item.lineTotal,
-      addons: item.addons,
-      note: item.note || undefined,
-    }));
-
     try {
-      await createOrder(restaurantId, {
-        service,
-        paymentMethod: payment,
-        customerName: fullName,
-        customerPhone: phone,
-        customerEmail: email,
-        address: service === 'delivery' ? address : undefined,
+      const session = await createOrderCheckout(restaurantId, {
+        serviceType: service,
+        customer: {
+          name: fullName,
+          phone,
+          email,
+          address: service === 'delivery' ? address : undefined,
+        },
         instructions: instructions || undefined,
-        items: orderItems,
-        subtotal,
-        taxes,
-        deliveryFee,
-        total,
+        items: lineItems.map((item) => ({
+          itemId: item.itemId,
+          quantity: item.quantity,
+          addonIds: item.addons.map((addon) => addon.id),
+          note: item.note || undefined,
+        })),
       });
-
-      setSubmitState('success');
-      window.setTimeout(() => {
-        onToast(
-          `Order confirmed! Total $${total.toFixed(2)}. ${
-            service === 'delivery' ? 'Preparing for delivery.' : 'Ready for pickup shortly.'
-          }`
-        );
-        onClearCart();
-        setSubmitState('idle');
-        onNavigateMenu();
-      }, 1200);
-    } catch {
+      setCheckoutSession(session);
+      setPaymentError(null);
       setSubmitState('idle');
-      onToast('Something went wrong placing your order. Please try again.');
+    } catch (error: unknown) {
+      setSubmitState('idle');
+      onToast(error instanceof Error ? error.message : c.text('checkoutStartError'));
+    }
+  };
+
+  const handlePaymentError = useCallback((message: string) => {
+    setPaymentError(message);
+    setSubmitState('idle');
+  }, []);
+
+  const handleCardToken = useCallback(async (token: string) => {
+    if (!checkoutSession) return;
+    setSubmitState('paying');
+    setPaymentError(null);
+    try {
+      let result = await submitCard(checkoutSession, token);
+      result = await waitForPayment(result);
+      setCheckoutSession(result);
+      if (result.status === 'succeeded' && result.fulfillmentStatus === 'completed') {
+        setSubmitState('success');
+        onToast(c.text('paymentSuccessToast', { number: result.order?.orderNumber ?? '' }));
+        window.setTimeout(() => {
+          onClearCart();
+          setSubmitState('idle');
+          onNavigateMenu();
+        }, 1200);
+      } else if (result.status === 'failed') {
+        setSubmitState('idle');
+        setPaymentError(result.failure?.message ?? c.text('cardDeclinedError'));
+      } else {
+        setSubmitState('idle');
+        setPaymentError(c.text('paymentPendingError'));
+      }
+    } catch (error: unknown) {
+      setSubmitState('idle');
+      try {
+        const refreshed = await getPayment(checkoutSession);
+        setCheckoutSession(refreshed);
+      } catch {
+        // Preserve the provider error below if status refresh is unavailable.
+      }
+      setPaymentError(error instanceof Error ? error.message : c.text('cardPaymentError'));
+    }
+  }, [c, checkoutSession, onClearCart, onNavigateMenu, onToast]);
+
+  const handleRetry = async () => {
+    if (!checkoutSession) return;
+    setSubmitState('verifying');
+    try {
+      const replacement = await retryPayment(checkoutSession);
+      setCheckoutSession(replacement);
+      setPaymentError(null);
+    } catch (error: unknown) {
+      setPaymentError(error instanceof Error ? error.message : c.text('retryError'));
+    } finally {
+      setSubmitState('idle');
     }
   };
 
@@ -208,13 +286,13 @@ export const OrderSummaryView = ({
                 className="mb-4 text-secondary hover:text-primary font-body-md text-sm flex items-center gap-1.5 transition-colors duration-200"
               >
                 <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-                Back to Menu
+                {c.text('backToMenuLabel')}
               </button>
               <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-on-surface mb-2 tracking-tight">
-                Order Summary
+                {c.text('heading')}
               </h1>
               <p className="font-body-md text-body-md text-secondary">
-                Review your selection of Lumière&apos;s finest offerings.
+                {c.text('subheading')}
               </p>
             </div>
 
@@ -250,8 +328,8 @@ export const OrderSummaryView = ({
                               type="button"
                               onClick={() => onRemoveLine(item.lineId)}
                               className="w-8 h-8 rounded-full flex items-center justify-center text-secondary hover:text-error hover:bg-error/10 transition-colors"
-                              aria-label={`Remove ${item.name}`}
-                              title="Remove item"
+                              aria-label={c.text('removeItemAriaLabel', { name: item.name })}
+                              title={c.text('removeItemTitle')}
                             >
                               <span className="material-symbols-outlined text-[20px]">delete</span>
                             </button>
@@ -260,14 +338,14 @@ export const OrderSummaryView = ({
 
                         <div className="flex items-center justify-between gap-3">
                           <span className="text-xs text-secondary font-sans">
-                            ${item.unitPrice.toFixed(2)} each
+                            {c.text('eachLabel', { price: `$${item.unitPrice.toFixed(2)}` })}
                           </span>
                           <div className="flex items-center bg-surface-container-high rounded-lg overflow-hidden border border-outline-variant/30">
                             <button
                               type="button"
                               onClick={() => onUpdateLineQty(item.lineId, -1)}
                               className="p-1.5 hover:bg-outline-variant/20 transition-colors"
-                              aria-label={`Decrease ${item.name}`}
+                              aria-label={c.text('decreaseAriaLabel', { name: item.name })}
                             >
                               <span className="material-symbols-outlined text-sm">remove</span>
                             </button>
@@ -278,7 +356,7 @@ export const OrderSummaryView = ({
                               type="button"
                               onClick={() => onUpdateLineQty(item.lineId, 1)}
                               className="p-1.5 hover:bg-outline-variant/20 transition-colors"
-                              aria-label={`Increase ${item.name}`}
+                              aria-label={c.text('increaseAriaLabel', { name: item.name })}
                             >
                               <span className="material-symbols-outlined text-sm">add</span>
                             </button>
@@ -299,8 +377,8 @@ export const OrderSummaryView = ({
                                     type="button"
                                     onClick={() => onRemoveAddon(item.lineId, addon.id)}
                                     className="w-6 h-6 rounded-full flex items-center justify-center hover:text-error hover:bg-error/10 transition-colors"
-                                    aria-label={`Remove ${addon.name}`}
-                                    title="Remove add-on"
+                                    aria-label={c.text('removeAddonAriaLabel', { name: addon.name })}
+                                    title={c.text('removeAddonTitle')}
                                   >
                                     <span className="material-symbols-outlined text-[16px]">close</span>
                                   </button>
@@ -315,12 +393,12 @@ export const OrderSummaryView = ({
                             htmlFor={`item-note-${item.lineId}`}
                             className="font-label-sm text-[10px] uppercase tracking-widest text-secondary block"
                           >
-                            Item note
+                            {c.text('itemNoteLabel')}
                           </label>
                           <textarea
                             id={`item-note-${item.lineId}`}
                             className="w-full bg-surface border border-outline-variant/40 rounded-lg px-3 py-2 font-body-md text-sm text-on-surface form-input-focus resize-none"
-                            placeholder="e.g. no onions, extra spicy..."
+                            placeholder={c.text('itemNotePlaceholder')}
                             rows={2}
                             value={item.note}
                             onChange={(e) => onUpdateLineNote(item.lineId, e.target.value)}
@@ -334,23 +412,23 @@ export const OrderSummaryView = ({
 
               <div className="bg-surface-container-low p-5 md:p-6 space-y-3">
                 <div className="flex justify-between text-secondary font-body-md text-sm md:text-base">
-                  <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>{c.text('subtotalLabel')}</span>
+                  <span>${displayedSubtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-secondary font-body-md text-sm md:text-base">
-                  <span>Taxes (8.5%)</span>
-                  <span>${taxes.toFixed(2)}</span>
+                  <span>{c.text('taxesLabel', { rate: taxRateLabel })}</span>
+                  <span>${displayedTaxes.toFixed(2)}</span>
                 </div>
                 {service === 'delivery' && (
                   <div className="flex justify-between text-secondary font-body-md text-sm md:text-base">
-                    <span>Delivery Fee</span>
-                    <span>${deliveryFee.toFixed(2)}</span>
+                    <span>{c.text('deliveryFeeLabel')}</span>
+                    <span>${displayedDeliveryFee.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="pt-3 border-t border-outline-variant/30 flex justify-between items-center">
-                  <span className="font-serif text-lg md:text-xl text-on-surface font-semibold">Total</span>
+                  <span className="font-serif text-lg md:text-xl text-on-surface font-semibold">{c.text('totalLabel')}</span>
                   <span className="font-serif text-lg md:text-xl text-primary font-bold">
-                    ${total.toFixed(2)}
+                    ${displayedTotal.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -363,7 +441,7 @@ export const OrderSummaryView = ({
                 className="text-primary hover:text-tertiary-container font-body-md flex items-center gap-2 transition-colors duration-200"
               >
                 <span className="material-symbols-outlined text-sm">add</span>
-                Add More Items
+                {c.text('addMoreItemsLabel')}
               </button>
               <span className="hidden sm:inline text-outline-variant">·</span>
               <button
@@ -372,7 +450,7 @@ export const OrderSummaryView = ({
                 className="text-secondary hover:text-primary font-body-md flex items-center gap-2 transition-colors duration-200"
               >
                 <span className="material-symbols-outlined text-sm">restaurant_menu</span>
-                Back to Menu
+                {c.text('backToMenuLabel')}
               </button>
             </div>
           </section>
@@ -381,46 +459,49 @@ export const OrderSummaryView = ({
           <section className="lg:col-span-7">
             <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 md:p-8 border border-outline-variant/30 shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
               <h2 className="font-serif text-xl md:text-2xl text-on-surface mb-6 md:mb-8 font-semibold">
-                Personal Details
+                {c.text('detailsHeading')}
               </h2>
 
               <form className="space-y-6 md:space-y-8" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                   <div className="space-y-2">
                     <label className="font-label-sm text-secondary uppercase tracking-widest block">
-                      Full Name
+                      {c.text('fullNameLabel')}
                     </label>
                     <input
                       className="w-full bg-surface border border-outline-variant/50 rounded-xl px-4 py-3 font-body-md text-on-surface form-input-focus"
-                      placeholder="Julian Vane"
+                      placeholder={c.text('fullNamePlaceholder')}
                       type="text"
                       value={fullName}
+                      disabled={Boolean(checkoutSession)}
                       onChange={(e) => setFullName(e.target.value)}
                       required
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="font-label-sm text-secondary uppercase tracking-widest block">
-                      Phone Number
+                      {c.text('phoneLabel')}
                     </label>
                     <input
                       className="w-full bg-surface border border-outline-variant/50 rounded-xl px-4 py-3 font-body-md text-on-surface form-input-focus"
-                      placeholder="+44 20 7123 4567"
+                      placeholder={c.text('phonePlaceholder')}
                       type="tel"
                       value={phone}
+                      disabled={Boolean(checkoutSession)}
                       onChange={(e) => setPhone(e.target.value)}
                       required
                     />
                   </div>
                   <div className="md:col-span-2 space-y-2">
                     <label className="font-label-sm text-secondary uppercase tracking-widest block">
-                      Email Address
+                      {c.text('emailLabel')}
                     </label>
                     <input
                       className="w-full bg-surface border border-outline-variant/50 rounded-xl px-4 py-3 font-body-md text-on-surface form-input-focus"
-                      placeholder="julian.v@example.com"
+                      placeholder={c.text('emailPlaceholder')}
                       type="email"
                       value={email}
+                      disabled={Boolean(checkoutSession)}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
@@ -430,44 +511,74 @@ export const OrderSummaryView = ({
                 {/* Service Preference */}
                 <div className="space-y-4">
                   <label className="font-label-sm text-secondary uppercase tracking-widest block">
-                    Service Preference
+                    {c.text('serviceLabel')}
                   </label>
                   <div className="flex p-1 bg-surface-container-high rounded-2xl w-full max-w-sm">
                     <button
                       type="button"
                       onClick={() => setService('delivery')}
+                      disabled={Boolean(checkoutSession)}
                       className={`flex-1 py-3 px-4 sm:px-6 rounded-xl font-body-md text-sm transition-all duration-300 ${
                         service === 'delivery'
                           ? 'bg-primary text-on-primary shadow-sm'
                           : 'text-secondary hover:text-on-surface'
                       }`}
                     >
-                      Delivery
+                      {c.text('deliveryOption')}
                     </button>
                     <button
                       type="button"
                       onClick={() => setService('pickup')}
+                      disabled={Boolean(checkoutSession)}
                       className={`flex-1 py-3 px-4 sm:px-6 rounded-xl font-body-md text-sm transition-all duration-300 ${
                         service === 'pickup'
                           ? 'bg-primary text-on-primary shadow-sm'
                           : 'text-secondary hover:text-on-surface'
                       }`}
                     >
-                      Pickup
+                      {c.text('pickupOption')}
                     </button>
                   </div>
                 </div>
 
+                {checkoutSession && (
+                  <div className="space-y-4 rounded-2xl border border-outline-variant/30 bg-surface p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="font-label-sm text-secondary uppercase tracking-widest">{c.text('securePaymentLabel')}</span>
+                      <span className="font-serif text-lg font-bold text-primary">
+                        ${(checkoutSession.amountCents / 100).toFixed(2)}
+                      </span>
+                    </div>
+                    {checkoutSession.status === 'failed' ? (
+                      <button type="button" onClick={handleRetry} className="w-full rounded-xl bg-on-surface px-4 py-3 font-bold text-white">
+                        {c.text('retryCardLabel')}
+                      </button>
+                    ) : checkoutSession.status === 'created' ? (
+                      <FinixCardForm
+                        key={checkoutSession.id}
+                        amountCents={checkoutSession.amountCents}
+                        disabled={submitState === 'paying'}
+                        onToken={handleCardToken}
+                        onError={handlePaymentError}
+                      />
+                    ) : (
+                      <p className="text-sm text-secondary">{c.text('paymentProcessingNote')}</p>
+                    )}
+                    {paymentError && <p className="text-sm text-error" role="alert">{paymentError}</p>}
+                  </div>
+                )}
+
                 {service === 'delivery' && (
                   <div className="space-y-2 animate-fadeIn">
                     <label className="font-label-sm text-secondary uppercase tracking-widest block">
-                      Delivery Address
+                      {c.text('addressLabel')}
                     </label>
                     <input
                       className="w-full bg-surface border border-outline-variant/50 rounded-xl px-4 py-3 font-body-md text-on-surface form-input-focus"
-                      placeholder="14 Mayfair Square, London, W1J 8AJ"
+                      placeholder={c.text('addressPlaceholder')}
                       type="text"
                       value={address}
+                      disabled={Boolean(checkoutSession)}
                       onChange={(e) => setAddress(e.target.value)}
                       required
                     />
@@ -476,13 +587,14 @@ export const OrderSummaryView = ({
 
                 <div className="space-y-2">
                   <label className="font-label-sm text-secondary uppercase tracking-widest block">
-                    Special Instructions
+                    {c.text('instructionsLabel')}
                   </label>
                   <textarea
                     className="w-full bg-surface border border-outline-variant/50 rounded-xl px-4 py-3 font-body-md text-on-surface form-input-focus resize-none"
-                    placeholder="Dietary restrictions or delivery notes..."
+                    placeholder={c.text('instructionsPlaceholder')}
                     rows={3}
                     value={instructions}
+                    disabled={Boolean(checkoutSession)}
                     onChange={(e) => setInstructions(e.target.value)}
                   />
                 </div>
@@ -490,7 +602,7 @@ export const OrderSummaryView = ({
                 {/* Payment Method */}
                 <div className="space-y-4">
                   <label className="font-label-sm text-secondary uppercase tracking-widest block">
-                    Payment Method
+                    {c.text('paymentMethodLabel')}
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                     {PAYMENT_OPTIONS.map((option) => (
@@ -512,10 +624,10 @@ export const OrderSummaryView = ({
                             </span>
                           )}
                           {option.mark ? (
-                            <span className="sr-only">{option.label}</span>
+                            <span className="sr-only">{c.text(option.labelKey)}</span>
                           ) : (
                             <span className="font-label-sm text-on-surface text-[10px] text-center">
-                              {option.label}
+                              {c.text(option.labelKey)}
                             </span>
                           )}
                         </div>
@@ -525,7 +637,7 @@ export const OrderSummaryView = ({
                 </div>
 
                 <div className="pt-2 md:pt-4">
-                  <button
+                  {!checkoutSession && <button
                     className={`w-full py-4 md:py-5 rounded-2xl font-serif text-lg md:text-xl tracking-wide transition-all duration-300 transform active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 ${
                       submitState === 'success'
                         ? 'bg-green-600 text-white'
@@ -557,20 +669,20 @@ export const OrderSummaryView = ({
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           />
                         </svg>
-                        Verifying...
+                        {c.text('verifyingLabel')}
                       </>
                     )}
                     {submitState === 'success' && (
                       <>
-                        Success
+                        {c.text('successLabel')}
                         <span className="material-symbols-outlined">check_circle</span>
                       </>
                     )}
-                    {submitState === 'idle' && 'Proceed to Checkout'}
-                  </button>
+                    {submitState === 'idle' && c.text('submitLabel')}
+                  </button>}
                   <p className="text-center text-secondary text-sm mt-5 md:mt-6 flex items-center justify-center gap-2">
                     <span className="material-symbols-outlined text-sm">lock</span>
-                    Your transaction is secure and encrypted.
+                    {c.text('securityNote')}
                   </p>
                 </div>
               </form>
