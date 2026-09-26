@@ -94,6 +94,10 @@ function AppShell() {
   // the new page never paints at the old scroll position; 'instant' because <html> has scroll-smooth.
   // The first render is skipped so a reload keeps the browser's restored scroll position.
   const previousPageRef = useRef(currentPage);
+  useEffect(() => {
+    // Otherwise Back/Forward can restore the old page's position after we've already jumped to the top.
+    if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
+  }, []);
   useLayoutEffect(() => {
     if (previousPageRef.current === currentPage) return;
     previousPageRef.current = currentPage;

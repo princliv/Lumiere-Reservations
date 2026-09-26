@@ -1,3 +1,5 @@
+import { fetchWithMockRecovery } from './mockRecovery';
+
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
 /** Same-origin when mocks are on so MSW can intercept login instead of leaking to :5000. */
 const BASE_URL = USE_MOCKS ? '' : (import.meta.env.VITE_ADMIN_API_URL ?? 'http://localhost:5000');
@@ -30,7 +32,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     headers.set('Authorization', `Bearer ${authToken}`);
   }
 
-  const res = await fetch(`${BASE_URL}/api/v1${path}`, { ...init, headers });
+  const res = await fetchWithMockRecovery(`${BASE_URL}/api/v1${path}`, { ...init, headers });
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);

@@ -13,6 +13,9 @@ async function bootstrap() {
       onUnhandledRequest: 'bypass',
       serviceWorker: { url: '/mockServiceWorker.js' },
     });
+    const { keepMockWorkerAttached } = await import('./mocks/keepAttached');
+    const { setMockRecovery } = await import('./services/mockRecovery');
+    setMockRecovery(keepMockWorkerAttached());
   }
 
   // The platform's own paths (login, super-admin login, and the bare root) always render the admin
